@@ -2,16 +2,12 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TranslaTDN + Currency</title>
-<meta name="theme-color" content="#0060f6">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-<link rel="apple-touch-icon" sizes="512x512" href="icon810.png">
+    <link rel="manifest" href="/manifest810.json">
+<link rel="apple-touch-icon" href="/icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="TranslaTDN">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 * {
 margin: 0;
@@ -80,7 +76,6 @@ radial-gradient(at 63% 5%, rgb(0 217 62 / 33%) 0px, transparent 50%),
 radial-gradient(at 6% 40%, rgb(0 83 255 / 48%) 0px, transparent 50%);
 background-color: #0060f630;
 height: 100vh;
-height: calc(var(--vh, 1vh) * 100);
 overflow: hidden;
 touch-action: none;
 -webkit-touch-callout: none;
@@ -162,7 +157,7 @@ opacity: 1;
 animation: dotsAppear .5s cubic-bezier(.45,1.5,.65,1);
 }
 
- @keyframes dotsAppear {
+@keyframes dotsAppear {
 0% {
 opacity: 0;
 transform: translate(-50%, -50%) scale(1.5);
@@ -223,8 +218,9 @@ transform: translate(-50%, -50%) scale(0.01);
 width: 120px;
 height: 120px;
 background-color: #ffffff00;
-backdrop-filter: blur(2px);
--webkit-backdrop-filter: blur(3px);
+text-shadow: 2px 1px 8px rgb(0 0 0 / 64%);
+backdrop-filter: blur(7px);
+-webkit-backdrop-filter: blur(5px);
 box-shadow:
 inset 2px 5px 2px rgb(0 0 0 / 13%),
 inset -1px -2px 1px rgb(255 255 255 / 43%),
@@ -245,7 +241,7 @@ font-size: 48px;
 color: white;
 cursor: pointer;
 z-index: 9999 !important;
-pointer-events: none !important;
+pointer-events: auto !important;
 }
 
 .back-button.show {
@@ -256,7 +252,7 @@ pointer-events: auto !important;
 /* Translation text elements with blur functionality */
 #jp, #en {
 position: absolute;
-font-size:3.3em;
+font-size:3.1em;
 color: white;
 max-width: calc(100vw - 60px);
 width: 80vh;
@@ -267,7 +263,7 @@ z-index: 1;
 }
 
 #jp {
-font-size:3em;
+font-size:2.9em;
 bottom: 27px;
 left: 27px;
 overflow-x: auto;
@@ -289,8 +285,8 @@ white-space: pre-wrap;
 
 /* Blur states for translation text */
 #jp.blurred, #en.blurred {
-filter: blur(5px);
--webkit-filter: blur(3px);
+filter: blur(10px);
+-webkit-filter: blur(10px);
 transition: filter 0.5s ease, -webkit-filter 0.5s ease;
 pointer-events: none;
 }
@@ -306,7 +302,7 @@ pointer-events: auto;
 animation: slideDown 0.5s ease forwards;
 }
 
- @keyframes slideDown {
+@keyframes slideDown {
 0% {
 transform: rotate(180deg) translateY(-40px);
 opacity: 0;
@@ -326,6 +322,7 @@ width: 100%;
 
 input::placeholder {
 color: #ffffff !important;
+text-shadow: 0 0 15px #9c9c9c42;
 opacity: 1;
 }
 
@@ -333,7 +330,7 @@ opacity: 1;
 animation: pulseGrow 0.8s ease;
 }
 
- @keyframes pulseGrow {
+@keyframes pulseGrow {
 0% { transform: scale(1); }
 50% { transform: scale(1.6); }
 100% { transform: scale(1); }
@@ -365,14 +362,14 @@ flex-direction: column;
 justify-content: center;
 align-items: center;
 height: 100%;
-gap: 220px;
+gap: 200px;
 padding: 20px;
 }
 
 .currency-card {
 text-align: center;
 color: white;
-padding: 10px 20px;
+padding: 50px 20px;
 width: 100%;
 max-width: 800px;
 opacity: 0;
@@ -390,7 +387,7 @@ color: white !important;
 margin: 5px 0;
 cursor: pointer;
 transition: all 0.33s ease;
-min-height: 150px;
+min-height: 120px;
 display: flex;
 align-items: center;
 justify-content: center;
@@ -399,17 +396,17 @@ overflow: hidden;
 }
 
 .amount-container:hover {
-
+text-shadow: 0 2px 22px #00000033;
 transform: scale(1.05);
 }
 
 .amount-display {
-font-size:80px;
-font-weight: 200;
+font-size: 88px;
+font-weight: 300;
 letter-spacing: 2px;
 line-height: 1;
 user-select: none;
-color: rgb(0, 0, 0) !important;
+color: rgba(0, 0, 0, 0.777) !important;
 transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 position: relative;
 z-index: 1;
@@ -418,9 +415,9 @@ z-index: 1;
 .amount-input {
 background: transparent;
 border: none;
-color: rgb(0, 0, 0) !important;
-font-size: 80px;
-font-weight: 100;
+color: rgba(0, 0, 0, 0.777) !important;
+font-size: 88px;
+font-weight: 300;
 text-align: center;
 width: 100%;
 outline: none;
@@ -430,20 +427,10 @@ display: none;
 transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 z-index: 20;
 position: relative;
-/* iOS optimizations */
--webkit-appearance: none;
--webkit-border-radius: 0;
-border-radius: 0;
 }
 
 .amount-input::placeholder {
 color: rgb(255, 255, 255) !important;
-}
-
-/* iOS numeric keyboard trigger */
-.amount-input {
-inputmode: decimal;
-pattern: "[0-9]*";
 }
 
 .datetime {
@@ -451,17 +438,18 @@ font-size: 22px;
 font-weight: 220;
 opacity: 0.85;
 margin-top: 25px;
-color: rgba(26, 26, 26, 0.829);
-
+color: rgb(51, 51, 51);
+text-shadow: 0 1px 8px #00000055;
 }
 
 .country-select {
 background: none;
 border: none;
 border-radius: 12px;
-padding: 1px 16px;
-font-size: 22px;
-font-weight: 300;
+color: rgb(59, 59, 59) !important;
+padding: 12px 16px;
+font-size: 20px;
+font-weight: 220;
 outline: none;
 cursor: pointer;
 backdrop-filter: blur(10px);
@@ -481,6 +469,7 @@ appearance: none;
 
 .country-select:hover {
 transform: scale(1.1);
+text-shadow: 0 8px 2px #0000001f;
 }
 
 .country-select option {
@@ -506,7 +495,7 @@ z-index: 30;
 .amount-display.size-md, .amount-input.size-md { font-size: 72px; }
 .amount-display.size-lg, .amount-input.size-lg { font-size: 88px; }
 
- @keyframes slideUpFade {
+@keyframes slideUpFade {
 0% {
 transform: translateY(30px);
 opacity: 0;
@@ -521,9 +510,21 @@ opacity: 1;
 animation: slideUpFade 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Instruction overlay */
+.instruction-overlay {
+position: absolute;
+bottom: 30px;
+left: 50%;
+transform: translateX(-50%);
+color: white;
+text-align: center;
+font-size: 14px;
+opacity: 0.7;
+z-index: 3;
+animation: fadeInOut 3s ease-in-out infinite;
+}
 
-
- @keyframes fadeInOut {
+@keyframes fadeInOut {
 0%, 100% { opacity: 0.4; }
 50% { opacity: 0.8; }
 }
@@ -562,7 +563,7 @@ height: 400px;
 animation: hexagonAppear 0.5s cubic-bezier(.45,1.5,.65,1) forwards;
 }
 
- @keyframes hexagonAppear {
+@keyframes hexagonAppear {
 from {
 transform: scale(1.5);
 opacity: 0;
@@ -622,12 +623,6 @@ height: 10px;
 .hexagon-container .dot:nth-child(6) { top: 25%; left: 13.4%; background-color: #daedff; }
 .hexagon-container .dot:nth-child(6)::after { background-color: #0088ff; }
 
-/* iOS specific styles */
-_::-webkit-full-page-media, _:future, :root .amount-input {
-  -webkit-user-select: text;
-  -webkit-touch-callout: default;
-}
-
 </style>
 </head>
 <body>
@@ -658,39 +653,39 @@ name="no_save" />
 <div class="currency-content">
 <div class="currency-card" id="card1">
 <select class="country-select" id="fromSelect" onchange="selectCountry('from', this.value)">
-<option value="🇺🇸">United States</option>
-<option value="🇯🇵">日本</option>
-<option value="🇨🇳">中国</option>
-<option value="🇰🇷">대한민국</option>
-<option value="🇪🇸">España</option>
-<option value="🇫🇷">France</option>
-<option value="🇷🇺">Россия</option>
-<option value="🇸🇦">المملكة العربية السعودية</option>
-<option value="🇮🇳">भारत</option>
-<option value="🇧🇷">Brasil</option>
+<option value="🇺🇸"> United States</option>
+<option value="🇯🇵"> 日本</option>
+<option value="🇨🇳"> 中国</option>
+<option value="🇰🇷"> 대한민국</option>
+<option value="🇪🇸"> España</option>
+<option value="🇫🇷"> France</option>
+<option value="🇷🇺"> Россия</option>
+<option value="🇸🇦"> المملكة العربية السعودية</option>
+<option value="🇮🇳"> भारत</option>
+<option value="🇧🇷"> Brasil</option>
 </select>
 <div class="amount-container" onclick="enableEdit('from')">
 <div class="amount-display size-lg" id="fromAmountDisplay">$100</div>
-<input type="text" class="amount-input size-lg" id="fromAmountInput" value="100" oninput="validateInput(this)" onblur="disableEdit('from')" onkeydown="handleEnterKey(event, 'from')" inputmode="decimal" pattern="[0-9]*">
+<input type="text" class="amount-input size-lg" id="fromAmountInput" value="100" oninput="validateInput(this)" onblur="disableEdit('from')" onkeydown="handleEnterKey(event, 'from')" inputmode="decimal">
 </div>
 <div class="datetime" id="fromDateTime">Saturday, Sep 9 10:00</div>
 </div>
 <div class="currency-card" id="card2">
 <select class="country-select" id="toSelect" onchange="selectCountry('to', this.value)">
-<option value="🇺🇸">United States</option>
-<option value="🇯🇵" selected>日本</option>
-<option value="🇨🇳">中国</option>
-<option value="🇰🇷">대한민국</option>
-<option value="🇪🇸">España</option>
-<option value="🇫🇷">France</option>
-<option value="🇷🇺">Россия</option>
-<option value="🇸🇦">المملكة العربية السعودية</option>
-<option value="🇮🇳">भारत</option>
-<option value="🇧🇷">Brasil</option>
+<option value="🇺🇸"> United States</option>
+<option value="🇯🇵" selected> 日本</option>
+<option value="🇨🇳"> 中国</option>
+<option value="🇰🇷"> 대한민국</option>
+<option value="🇪🇸"> España</option>
+<option value="🇫🇷"> France</option>
+<option value="🇷🇺"> Россия</option>
+<option value="🇸🇦"> المملكة العربية السعودية</option>
+<option value="🇮🇳"> भारत</option>
+<option value="🇧🇷"> Brasil</option>
 </select>
 <div class="amount-container" onclick="enableEdit('to')">
 <div class="amount-display size-lg" id="toAmountDisplay">¥15,000</div>
-<input type="text" class="amount-input size-lg" id="toAmountInput" value="15000" oninput="validateInput(this)" onblur="disableEdit('to')" onkeydown="handleEnterKey(event, 'to')" inputmode="decimal" pattern="[0-9]*">
+<input type="text" class="amount-input size-lg" id="toAmountInput" value="15000" oninput="validateInput(this)" onblur="disableEdit('to')" onkeydown="handleEnterKey(event, 'to')" inputmode="decimal">
 </div>
 <div class="datetime" id="toDateTime">9月9日 土曜日 2:00</div>
 </div>
@@ -709,35 +704,21 @@ name="no_save" />
 </div>
 </div>
 
+<!-- Instruction Overlay -->
+<div class="instruction-overlay">
+Press ↑ or Cmd+T for currency converter
+</div>
 
-
-<script>
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => console.log('Service Worker: Registered'))
-      .catch(err => console.log(`Service Worker: Error: ${'err'}`));
-  });
-}
-
-// iOS Haptic Support
+<script type="module">
 try {
-  if (window.haptic) {} // Already loaded
+const { haptic } = await import("https://esm.sh/ios-haptics");
+window.haptic = haptic;
 } catch (e) {
-  (async () => {
-    try {
-      const { haptic } = await import("https://esm.sh/ios-haptics");
-      window.haptic = haptic;
-    } catch (e) {
-      window.haptic = {
-        confirm: () => {},
-        error: () => {},
-      };
-    }
-  })();
+window.haptic = {
+confirm: () => {},
+error: () => {},
+};
 }
-</script>
 </script>
 
 <script>
@@ -762,9 +743,6 @@ let selectedLanguage = null;
 let isCurrencyActive = false;
 let isHexagonActive = false;
 
-// iOS Detection
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
 // Haptic Functions
 const playHapticConfirm = () => window.haptic?.confirm();
 const playHapticBurst = () => {
@@ -784,24 +762,24 @@ setTimeout(() => window.haptic.error(), i * delay);
 
 // Data
 const languageMap = {
-    '🇺🇸': 'en-US', '🇯🇵': 'ja-JP', '🇨🇳': 'zh-CN', '🇰🇷': 'ko-KR', '🇪🇸': 'es-ES',
-    '🇫🇷': 'fr-FR', '🇷🇺': 'ru-RU', '🇸🇦': 'ar-SA', '🇮🇳': 'hi-IN', '🇧🇷': 'pt-BR'
+'🇯🇵': 'ja-JP', '🇨🇳': 'zh-CN', '🇰🇷': 'ko-KR', '🇺🇸': 'en-US', '🇪🇸': 'es-ES',
+'🇫🇷': 'fr-FR', '🇷🇺': 'ru-RU', '🇸🇦': 'ar-SA', '🇮🇳': 'hi-IN', '🇧🇷': 'pt-BR'
 };
 const translationMap = {
-    '🇺🇸': 'en', '🇯🇵': 'ja', '🇨🇳': 'zh', '🇰🇷': 'ko', '🇪🇸': 'es',
-    '🇫🇷': 'fr', '🇷🇺': 'ru', '🇸🇦': 'ar', '🇮🇳': 'hi', '🇧🇷': 'pt'
+'🇯🇵': 'ja', '🇨🇳': 'zh', '🇰🇷': 'ko', '🇺🇸': 'en', '🇪🇸': 'es',
+'🇫🇷': 'fr', '🇷🇺': 'ru', '🇸🇦': 'ar', '🇮🇳': 'hi', '🇧🇷': 'pt'
 };
 const countries = {
-    '🇺🇸': { code: 'USD', symbol: '$', timezone: 'America/New_York', names: { ja: 'アメリカ', en: 'United States' }},
-    '🇯🇵': { code: 'JPY', symbol: '¥', timezone: 'Asia/Tokyo', names: { ja: '日本', en: 'Japan' }},
-    '🇨🇳': { code: 'CNY', symbol: '¥', timezone: 'Asia/Shanghai', names: { ja: '中国', en: 'China' }},
-    '🇰🇷': { code: 'KRW', symbol: '₩', timezone: 'Asia/Seoul', names: { ja: '韓国', en: 'South Korea' }},
-    '🇪🇸': { code: 'EUR', symbol: '€', timezone: 'Europe/Madrid', names: { ja: 'スペイン', en: 'Spain' }},
-    '🇫🇷': { code: 'EUR', symbol: '€', timezone: 'Europe/Paris', names: { ja: 'フランス', en: 'France' }},
-    '🇷🇺': { code: 'RUB', symbol: '₽', timezone: 'Europe/Moscow', names: { ja: 'ロシア', en: 'Russia' }},
-    '🇸🇦': { code: 'SAR', symbol: '﷼', timezone: 'Asia/Riyadh', names: { ja: 'サウジアラビア', en: 'Saudi Arabia' }},
-    '🇮🇳': { code: 'INR', symbol: '₹', timezone: 'Asia/Kolkata', names: { ja: 'インド', en: 'India' }},
-    '🇧🇷': { code: 'BRL', symbol: 'R$', timezone: 'America/Sao_Paulo', names: { ja: 'ブラジル', en: 'Brazil' }}
+'🇺🇸': { code: 'USD', symbol: '$', timezone: 'America/New_York', names: { ja: 'アメリカ', en: 'United States' }},
+'🇯🇵': { code: 'JPY', symbol: '¥', timezone: 'Asia/Tokyo', names: { ja: '日本', en: 'Japan' }},
+'🇨🇳': { code: 'CNY', symbol: '¥', timezone: 'Asia/Shanghai', names: { ja: '中国', en: 'China' }},
+'🇰🇷': { code: 'KRW', symbol: '₩', timezone: 'Asia/Seoul', names: { ja: '韓国', en: 'South Korea' }},
+'🇪🇸': { code: 'EUR', symbol: '€', timezone: 'Europe/Madrid', names: { ja: 'スペイン', en: 'Spain' }},
+'🇫🇷': { code: 'EUR', symbol: '€', timezone: 'Europe/Paris', names: { ja: 'フランス', en: 'France' }},
+'🇷🇺': { code: 'RUB', symbol: '₽', timezone: 'Europe/Moscow', names: { ja: 'ロシア', en: 'Russia' }},
+'🇸🇦': { code: 'SAR', symbol: '﷼', timezone: 'Asia/Riyadh', names: { ja: 'サウジアラビア', en: 'Saudi Arabia' }},
+'🇮🇳': { code: 'INR', symbol: '₹', timezone: 'Asia/Kolkata', names: { ja: 'インド', en: 'India' }},
+'🇧🇷': { code: 'BRL', symbol: 'R$', timezone: 'America/Sao_Paulo', names: { ja: 'ブラジル', en: 'Brazil' }}
 };
 let fromCountry = '🇺🇸';
 let toCountry = '🇯🇵';
@@ -1008,11 +986,11 @@ inputEl.dispatchEvent(new Event('input'));
 function createDots() {
 const flags = Object.keys(countries);
 dotsContainer.innerHTML = '';
-for (let i = 0; i < flags.length; i++) {
+for (let i = 0; i < 10; i++) {
 const dot = document.createElement('div');
 dot.className = 'dot';
 dot.textContent = flags[i];
-const angle = (i * 360) / flags.length;
+const angle = (i * 360) / 10;
 const radian = (angle * Math.PI) / 180;
 const radius = 150;
 dot.style.left = `${Math.cos(radian) * radius + 150 - 9}px`;
@@ -1143,7 +1121,7 @@ exchangeRates.USD = 1;
 convertCurrency('from');
 }
 
-// iOS Optimized Currency Input Functions
+// Currency Input Functions
 function enableEdit(type) {
 playHapticBurst();
 const container = document.getElementById(`${type}AmountDisplay`).parentElement;
@@ -1153,18 +1131,9 @@ const symbol = countries[type === 'from' ? fromCountry : toCountry].symbol;
 input.value = display.textContent.replace(symbol, '').replace(/,/g, '');
 applySizeClass(input, input.value);
 container.classList.add('editing-mode');
-
-// iOS specific optimizations
-if (isIOS) {
-input.setAttribute('type', 'number');
-}
-
 setTimeout(() => { 
 input.focus(); 
 input.select(); 
-if (isIOS) {
-input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
 }, 50);
 }
 
@@ -1256,7 +1225,7 @@ input.value = input.value.replace(/[^0-9.,０-９．，]/g, '');
 }
 
 // App Initialization
-function initApp() {
+window.addEventListener("load", () => {
 createDots();
 resetAll();
 document.getElementById('fromSelect').value = fromCountry;
@@ -1264,38 +1233,7 @@ document.getElementById('toSelect').value = toCountry;
 if ('speechSynthesis' in window) {
 speechSynthesis.getVoices();
 }
-fetchExchangeRates();
-updateDateTime();
-
-// iOS PWA specific initialization
-if (isIOS && window.navigator.standalone) {
-document.body.style.paddingTop = '20px'; // Status bar compensation
-}
-}
-
-// PWA Install Prompt (iOS Safari)
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-e.preventDefault();
-deferredPrompt = e;
 });
-
-// iOS Viewport Height Fix
-function setVH() {
-let vh = window.innerHeight * 0.01;
-document.documentElement.style.setProperty('--vh', `${vh}px`);
-}
-
-window.addEventListener('load', () => {
-  setVH();
-  initApp();
-});
-window.addEventListener('resize', setVH);
-window.addEventListener('orientationchange', setVH);
-
-  document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-  });
 </script>
 </body>
 </html>
