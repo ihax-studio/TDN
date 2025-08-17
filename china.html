@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+      <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国</title>
+    <style>
+        body {
+            font-family: 'Arial', 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+
+background: radial-gradient(at 46% 54%, rgb(200 0 217 / 22%) 0px, transparent 50%),
+radial-gradient(at 30% 94%, rgb(116 25 223 / 3%) 0px, transparent 50%),
+radial-gradient(at 90% 5%, rgb(191 0 255 / 14%) 0px, transparent 50%),
+radial-gradient(at 24% 60%, rgb(217 0 255 / 19%) 0px, transparent 50%),
+radial-gradient(at 64% 7%, rgb(3 255 195 / 19%) 0px, transparent 50%),
+radial-gradient(at 63% 5%, rgb(0 217 62 / 33%) 0px, transparent 50%),
+radial-gradient(at 6% 40%, rgb(0 83 255 / 48%) 0px, transparent 50%);
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.649);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 4px 46px rgba(0,0,0,0.1);
+        }
+        .day-selector {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+          .day-btn {
+            background: #ffffff97;
+            color: rgb(0, 0, 0);
+              box-shadow:
+    inset 2px 5px 2px rgb(255 255 255 / 13%),
+    inset 0 0 1px rgb(255 255 255),
+    inset 0 1px 1px rgb(255 255 255 / 65%),
+    0 1px 88px rgb(237 171 234 / 20%);
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 22px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .day-btn.active { color: #0099ff; }
+        .quiz-section {
+            display: none;
+            margin-bottom: 30px;
+        }
+        .quiz-section.active { display: block; }
+        .category {
+            background: #f8f9fa;
+            
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 22px;
+        }
+        .phrase {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 15px;
+                          box-shadow:
+    inset 2px 5px 2px rgb(255 255 255 / 13%),
+    inset 0 0 1px rgb(255 255 255),
+    inset 0 1px 1px rgb(255 255 255 / 65%),
+    0 1px 88px rgb(237 171 234 / 20%);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .phrase:hover {               box-shadow:
+    inset 2px 5px 2px rgb(255 255 255 / 13%),
+    inset 0 0 1px rgb(255 255 255),
+    inset 0 1px 1px rgb(255 255 255 / 65%),
+    0 1px 88px rgb(237 171 234 / 20%); }
+        .chinese { font-size: 18px; font-weight: bold; color: #dc3545; }
+        .pinyin { font-size: 14px; color: #6c757d; font-style: italic; }
+        .japanese { font-size: 16px; color: #333; }
+        .pronunciation-btn {
+            background: #d7dfe0;
+                          box-shadow:
+    inset 2px 5px 2px rgb(255 255 255 / 13%),
+    inset 0 0 1px rgb(255 255 255),
+    inset 0 1px 1px rgb(255 255 255 / 65%),
+    0 1px 88px rgb(237 171 234 / 20%);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .quiz-card {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .option-btn {
+            background: #e9ecef;
+            border: 2px solid #dee2e6;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option-btn:hover { background: #007bff; color: white; }
+        .option-btn.correct { background: #28a745; color: white; }
+        .option-btn.wrong { background: #dc3545; color: white; }
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+              box-shadow:
+    inset 2px 5px 2px rgb(255 255 255 / 13%),
+    inset 0 0 1px rgb(255 255 255),
+    inset 0 1px 1px rgb(255 255 255 / 65%),
+    0 1px 88px rgb(237 171 234 / 20%);
+        }
+        .progress-bar {
+            background: #00a2ff;
+
+            height: 100%;
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+        h1 { color: #dc3545; text-align: center; }
+        h2 { color: #007bff; }
+        h3 { color: #6f42c1; }
+        .emergency { background: #f8d7da; border-color: #dc3545; }
+        .tip {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇨🇳 中国語</h1>
+        <p style="text-align: center; font-size: 18px; color: #666;"></p>
+        
+        <div class="day-selector">
+            <button class="day-btn active" onclick="showDay(1)">1日目: 基本・トイレ</button>
+            <button class="day-btn" onclick="showDay(2)">2日目: 食事・買い物</button>
+            <button class="day-btn" onclick="showDay(3)">3日目: 会話・緊急時</button>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+
+        <!-- 1日目 -->
+        <div class="quiz-section active" id="day1">
+            <h2>📅 1日目: 基本挨拶・トイレ</h2>
+            
+            <div class="category">
+                <h3>🙋‍♀️ 基本挨拶</h3>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">你好</div>
+                        <div class="pinyin">nǐ hǎo</div>
+                    </div>
+                    <div class="japanese" style="display:none;">こんにちは</div>
+                    <button class="pronunciation-btn" onclick="speak('你好')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">老师好</div>
+                        <div class="pinyin">lǎo shī hǎo</div>
+                    </div>
+                    <div class="japanese" style="display:none;">先生、こんにちは</div>
+                    <button class="pronunciation-btn" onclick="speak('老师好')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">谢谢</div>
+                        <div class="pinyin">xiè xiè</div>
+                    </div>
+                    <div class="japanese" style="display:none;">ありがとう</div>
+                    <button class="pronunciation-btn" onclick="speak('谢谢')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">对不起</div>
+                        <div class="pinyin">duì bù qǐ</div>
+                    </div>
+                    <div class="japanese" style="display:none;">すみません</div>
+                    <button class="pronunciation-btn" onclick="speak('对不起')">🔊</button>
+                </div>
+            </div>
+
+            <div class="category emergency">
+                <h3>🚽 トイレ（緊急重要！）</h3>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">我想上厕所</div>
+                        <div class="pinyin">wǒ xiǎng shàng cè suǒ</div>
+                    </div>
+                    <div class="japanese" style="display:none;">トイレに行きたいです</div>
+                    <button class="pronunciation-btn" onclick="speak('我想上厕所')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">厕所在哪里？</div>
+                        <div class="pinyin">cè suǒ zài nǎ lǐ？</div>
+                    </div>
+                    <div class="japanese" style="display:none;">トイレはどこですか？</div>
+                    <button class="pronunciation-btn" onclick="speak('厕所在哪里')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">很急</div>
+                        <div class="pinyin">hěn jí</div>
+                    </div>
+                    <div class="japanese" style="display:none;">急いでます</div>
+                    <button class="pronunciation-btn" onclick="speak('很急')">🔊</button>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>💡 発音のコツ:</strong> 中国語は声調（トーン）が大切！「你好」の「你」は第3声（低く下がって上がる）、「好」は第3声です。
+            </div>
+        </div>
+
+        <!-- 2日目 -->
+        <div class="quiz-section" id="day2">
+            <h2>📅 2日目: 食事・買い物</h2>
+            
+            <div class="category">
+                <h3>🍽️ 食事</h3>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">我饿了</div>
+                        <div class="pinyin">wǒ è le</div>
+                    </div>
+                    <div class="japanese" style="display:none;">お腹が空きました</div>
+                    <button class="pronunciation-btn" onclick="speak('我饿了')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">我要这个</div>
+                        <div class="pinyin">wǒ yào zhè gè</div>
+                    </div>
+                    <div class="japanese" style="display:none;">これをください</div>
+                    <button class="pronunciation-btn" onclick="speak('我要这个')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">多少钱？</div>
+                        <div class="pinyin">duō shǎo qián？</div>
+                    </div>
+                    <div class="japanese" style="display:none;">いくらですか？</div>
+                    <button class="pronunciation-btn" onclick="speak('多少钱')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">好吃</div>
+                        <div class="pinyin">hǎo chī</div>
+                    </div>
+                    <div class="japanese" style="display:none;">おいしい</div>
+                    <button class="pronunciation-btn" onclick="speak('好吃')">🔊</button>
+                </div>
+            </div>
+
+            <div class="category">
+                <h3>🛒 買い物</h3>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">我想买</div>
+                        <div class="pinyin">wǒ xiǎng mǎi</div>
+                    </div>
+                    <div class="japanese" style="display:none;">買いたいです</div>
+                    <button class="pronunciation-btn" onclick="speak('我想买')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">太贵了</div>
+                        <div class="pinyin">tài guì le</div>
+                    </div>
+                    <div class="japanese" style="display:none;">高すぎます</div>
+                    <button class="pronunciation-btn" onclick="speak('太贵了')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">便宜一点</div>
+                        <div class="pinyin">pián yí yì diǎn</div>
+                    </div>
+                    <div class="japanese" style="display:none;">もう少し安く</div>
+                    <button class="pronunciation-btn" onclick="speak('便宜一点')">🔊</button>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>💡 数字も覚えよう:</strong> 1=一(yī), 2=二(èr), 3=三(sān), 4=四(sì), 5=五(wǔ), 6=六(liù), 7=七(qī), 8=八(bā), 9=九(jiǔ), 10=十(shí)
+            </div>
+        </div>
+
+        <!-- 3日目 -->
+        <div class="quiz-section" id="day3">
+            <h2>📅 3日目: 日常会話・緊急時</h2>
+            
+            <div class="category">
+                <h3>💬 日常会話</h3>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">我不懂</div>
+                        <div class="pinyin">wǒ bù dǒng</div>
+                    </div>
+                    <div class="japanese" style="display:none;">わかりません</div>
+                    <button class="pronunciation-btn" onclick="speak('我不懂')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">请说慢一点</div>
+                        <div class="pinyin">qǐng shuō màn yì diǎn</div>
+                    </div>
+                    <div class="japanese" style="display:none;">ゆっくり話してください</div>
+                    <button class="pronunciation-btn" onclick="speak('请说慢一点')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">我是日本人</div>
+                        <div class="pinyin">wǒ shì rì běn rén</div>
+                    </div>
+                    <div class="japanese" style="display:none;">私は日本人です</div>
+                    <button class="pronunciation-btn" onclick="speak('我是日本人')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">可以帮助我吗？</div>
+                        <div class="pinyin">kě yǐ bāng zhù wǒ ma？</div>
+                    </div>
+                    <div class="japanese" style="display:none;">助けてもらえますか？</div>
+                    <button class="pronunciation-btn" onclick="speak('可以帮助我吗')">🔊</button>
+                </div>
+            </div>
+
+            <div class="category emergency">
+                <h3>🚨 緊急時</h3>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">救命！</div>
+                        <div class="pinyin">jiù míng！</div>
+                    </div>
+                    <div class="japanese" style="display:none;">助けて！</div>
+                    <button class="pronunciation-btn" onclick="speak('救命')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">我生病了</div>
+                        <div class="pinyin">wǒ shēng bìng le</div>
+                    </div>
+                    <div class="japanese" style="display:none;">病気です</div>
+                    <button class="pronunciation-btn" onclick="speak('我生病了')">🔊</button>
+                </div>
+                <div class="phrase" onclick="toggleAnswer(this)">
+                    <div>
+                        <div class="chinese">我迷路了</div>
+                        <div class="pinyin">wǒ mí lù le</div>
+                    </div>
+                    <div class="japanese" style="display:none;">道に迷いました</div>
+                    <button class="pronunciation-btn" onclick="speak('我迷路了')">🔊</button>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>💡 最終アドバイス:</strong> 中国人は外国人に優しいです！「我是日本人」と言えば、親切に助けてくれることが多いです。恥ずかしがらずに話しかけてみましょう！
+            </div>
+        </div>
+
+        <!-- クイズセクション -->
+        <div style="text-align: center; margin-top: 40px;">
+            <button class="day-btn" onclick="startQuiz()" style="background: #ffc107; color: #212529;">🧠 理解度チェッククイズ</button>
+        </div>
+
+        <div id="quizModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%;">
+                <div id="quizContent"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="closeQuiz()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">閉じる</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        const quizData = [
+            {
+                question: "「你好」の意味は？",
+                options: ["さようなら", "こんにちは", "ありがとう", "すみません"],
+                correct: 1
+            },
+            {
+                question: "トイレに行きたい時に言うのは？",
+                options: ["我想上厕所", "我饿了", "我不懂", "我迷路了"],
+                correct: 0
+            },
+            {
+                question: "「多少钱？」の意味は？",
+                options: ["何時ですか？", "どこですか？", "いくらですか？", "だれですか？"],
+                correct: 2
+            },
+            {
+                question: "「我是日本人」の読み方は？",
+                options: ["wǒ shì rì běn rén", "wǒ xiǎng rì běn rén", "wǒ yào rì běn rén", "wǒ dōu rì běn rén"],
+                correct: 0
+            },
+            {
+                question: "緊急時に「助けて！」は中国語で？",
+                options: ["谢谢", "对不起", "救命", "再见"],
+                correct: 2
+            }
+        ];
+
+        function showDay(dayNumber) {
+            document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.quiz-section').forEach(section => section.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('day' + dayNumber).classList.add('active');
+            
+            updateProgress(dayNumber);
+        }
+
+        function toggleAnswer(element) {
+            const japanese = element.querySelector('.japanese');
+            if (japanese.style.display === 'none') {
+                japanese.style.display = 'block';
+                element.style.backgroundColor = '#e8f5e8';
+            } else {
+                japanese.style.display = 'none';
+                element.style.backgroundColor = 'white';
+            }
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN';
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function updateProgress(day) {
+            const progress = (day / 3) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function startQuiz() {
+            currentQuizIndex = 0;
+            quizScore = 0;
+            showQuizQuestion();
+            document.getElementById('quizModal').style.display = 'block';
+        }
+
+        function showQuizQuestion() {
+            if (currentQuizIndex >= quizData.length) {
+                showQuizResult();
+                return;
+            }
+
+            const question = quizData[currentQuizIndex];
+            const content = `
+                <div class="quiz-card">
+                    <h3>問題 ${currentQuizIndex + 1}/${quizData.length}</h3>
+                    <p style="font-size: 18px; margin: 20px 0;">${question.question}</p>
+                    <div class="quiz-options">
+                        ${question.options.map((option, index) => 
+                            `<button class="option-btn" onclick="selectAnswer(${index})">${option}</button>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('quizContent').innerHTML = content;
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = quizData[currentQuizIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            buttons[selectedIndex].classList.add(selectedIndex === question.correct ? 'correct' : 'wrong');
+            if (selectedIndex !== question.correct) {
+                buttons[question.correct].classList.add('correct');
+            }
+            
+            if (selectedIndex === question.correct) {
+                quizScore++;
+            }
+            
+            setTimeout(() => {
+                currentQuizIndex++;
+                showQuizQuestion();
+            }, 1500);
+        }
+
+        function showQuizResult() {
+            const percentage = Math.round((quizScore / quizData.length) * 100);
+            let message = "";
+            if (percentage >= 80) message = "素晴らしい！中国でサバイバルできます！🎉";
+            else if (percentage >= 60) message = "良くできました！もう少し復習しましょう 📚";
+            else message = "もう一度復習してからチャレンジ！💪";
+            
+            document.getElementById('quizContent').innerHTML = `
+                <div class="quiz-card">
+                    <h3>結果発表！</h3>
+                    <p style="font-size: 24px; color: #007bff;">正解率: ${percentage}%</p>
+                    <p style="font-size: 18px; margin: 20px 0;">${quizScore}/${quizData.length} 問正解</p>
+                    <p style="font-size: 16px; color: #28a745;">${message}</p>
+                    <button onclick="startQuiz()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px;">もう一度チャレンジ</button>
+                </div>
+            `;
+        }
+
+        function closeQuiz() {
+            document.getElementById('quizModal').style.display = 'none';
+        }
+
+        updateProgress(1);
+    </script>
+</body>
+</html>
