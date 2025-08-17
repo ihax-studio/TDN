@@ -711,9 +711,6 @@ name="no_save" />
 
 
 
-<!-- Haptic script -->
-<script src="ios-haptics.js"></script>
-
 <script>
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
@@ -723,6 +720,24 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.log(`Service Worker: Error: ${'err'}`));
   });
 }
+
+// iOS Haptic Support
+try {
+  if (window.haptic) {} // Already loaded
+} catch (e) {
+  (async () => {
+    try {
+      const { haptic } = await import("https://esm.sh/ios-haptics");
+      window.haptic = haptic;
+    } catch (e) {
+      window.haptic = {
+        confirm: () => {},
+        error: () => {},
+      };
+    }
+  })();
+}
+</script>
 </script>
 
 <script>
