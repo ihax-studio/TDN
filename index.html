@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TranslaTDN + Currency</title>
+<meta name="theme-color" content="#0060f6">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon810.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TranslaTDN">
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+/* Chrome-based Reset CSS */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+margin: 0;
+padding: 0;
+border: 0;
+font-size: 100%;
+font: inherit;
+vertical-align: baseline;
+}
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+display: block;
+}
+body {
+line-height: 1;
+}
+ol, ul {
+list-style: none;
+}
+blockquote, q {
+quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+content: '';
+content: none;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+input, textarea, select {
+font-family: inherit;
+font-size: inherit;
+outline: none;
+}
+
+body {
+font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+color: white;
+background: radial-gradient(at 46% 54%, rgb(200 0 217 / 22%) 0px, transparent 50%),
+radial-gradient(at 30% 94%, rgb(116 25 223 / 3%) 0px, transparent 50%),
+radial-gradient(at 90% 5%, rgb(191 0 255 / 14%) 0px, transparent 50%),
+radial-gradient(at 24% 60%, rgb(217 0 255 / 19%) 0px, transparent 50%),
+radial-gradient(at 64% 7%, rgb(3 255 195 / 19%) 0px, transparent 50%),
+radial-gradient(at 63% 5%, rgb(0 217 62 / 33%) 0px, transparent 50%),
+radial-gradient(at 6% 40%, rgb(0 83 255 / 48%) 0px, transparent 50%);
+background-color: #0060f630;
+height: 100vh;
+height: calc(var(--vh, 1vh) * 100);
+overflow: hidden;
+touch-action: none;
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-webkit-tap-highlight-color: transparent;
+overscroll-behavior: none;
+position: relative;
+}
+
+/* Translation App Styles */
+.translation-layer {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 2;
+}
+
+.mic-wrapper {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+transition: transform 0.5s ease, z-index 0s 0.5s;
+z-index: 8;
+}
+
+.mic-wrapper.moved-up {
+z-index: 101;
+}
+
+.mic {
+width: 160px;
+height: 160px;
+background-color: #ffffff00;
+box-shadow:
+inset 2px 6px 2px rgb(255 255 255 / 13%),
+inset -1px -5px 3px rgb(231 229 255 / 65%),
+inset 0 0 12px rgb(255 255 255),
+inset 0 1px 1px rgb(255 255 255 / 65%),
+0 1px 28px rgb(0 229 255 / 20%),
+inset 2px 12px 11px rgb(255 255 255 / 16%);
+border-radius: 50%;
+transition: transform .8s ease;
+position: relative;
+z-index: 8;
+cursor: pointer;
+}
+
+.mic.shrunk {
+transition: all 0.5s cubic-bezier(.45,1.5,.65,1);
+transform: scale(0.7);
+}
+
+.mic.mini {
+transform: scale(0.33);
+}
+
+.mic.moved-up {
+transition: all 0.88s ease;
+transform: translate(0%, -400px) scale(0.11);
+}
+
+.dots-container {
+position: absolute;
+top: 42%;
+left: 41%;
+transform: translate(-50%, -50%);
+width: 300px;
+height: 300px;
+opacity: 0;
+transition: opacity .5s cubic-bezier(.45,1.5,.65,1);
+z-index: 7;
+}
+
+.dots-container.show {
+opacity: 1;
+animation: dotsAppear .5s cubic-bezier(.45,1.5,.65,1);
+}
+
+ @keyframes dotsAppear {
+0% {
+opacity: 0;
+transform: translate(-50%, -50%) scale(1.5);
+}
+100% {
+opacity: 1;
+transform: translate(-50%, -50%) scale(1);
+}
+}
+
+.dot {
+position: absolute;
+width: 45px;
+height: 45px;
+background-color: white;
+border-radius: 50%;
+box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 30px;
+cursor: pointer;
+transition: transform .7s cubic-bezier(.45,1.5,.65,1);
+z-index: 7;
+}
+
+.dot:hover {
+transform: scale(1.5);
+}
+
+.selected-flag {
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%) scale(2);
+opacity: 0;
+transition: all 1s ease;
+z-index: 6;
+font-size: 48px;
+}
+
+.selected-flag.show {
+transform: translate(-50%, -50%) scale(1);
+opacity: 1;
+}
+
+.selected-flag.hide {
+transition: all 1.2s ease;
+transform: translate(-50%, -50%) scale(2);
+opacity: 0;
+}
+
+.back-button {
+position: fixed !important;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%) scale(0.01);
+width: 120px;
+height: 120px;
+background-color: #ffffff00;
+backdrop-filter: blur(2px);
+-webkit-backdrop-filter: blur(3px);
+box-shadow:
+inset 2px 5px 2px rgb(0 0 0 / 13%),
+inset -1px -2px 1px rgb(255 255 255 / 43%),
+inset 0 0 12px rgb(255 255 255),
+inset 0 1px 1px rgb(255 255 255 / 65%),
+0 12px 48px rgba(0,0,0,0.08),
+0 1px 88px rgb(237 171 234 / 20%),
+inset 0 2px 5px rgb(255 255 255 / 57%),
+0 0 23px #ffffff36,
+inset 0 0 23px #00000026;
+border-radius: 50%;
+font-weight: 1;
+transition: transform 1s cubic-bezier(.45,1.5,.65,1);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 48px;
+color: white;
+cursor: pointer;
+z-index: 9999 !important;
+pointer-events: none !important;
+}
+
+.back-button.show {
+transform: translate(-50%, -50%) scale(1);
+pointer-events: auto !important;
+}
+
+/* Translation text elements with blur functionality */
+#jp, #en {
+position: absolute;
+font-size:3.3em;
+color: white;
+max-width: calc(100vw - 60px);
+width: 80vh;
+transition: all 0.5s ease;
+max-height: 10em;
+overflow-y: auto;
+z-index: 1;
+}
+
+#jp {
+font-size:3em;
+bottom: 27px;
+left: 27px;
+overflow-x: auto;
+white-space: nowrap;
+}
+
+#en {
+top: 30px;
+right: 30px;
+font-size: 3.3em;
+font-weight: bold;
+transform: rotate(180deg);
+opacity: 0;
+cursor: pointer;
+user-select: text;
+-webkit-user-select: text;
+white-space: pre-wrap;
+}
+
+/* Blur states for translation text */
+#jp.blurred, #en.blurred {
+filter: blur(5px);
+-webkit-filter: blur(3px);
+transition: filter 0.5s ease, -webkit-filter 0.5s ease;
+pointer-events: none;
+}
+
+#jp.not-blurred, #en.not-blurred {
+filter: blur(0px);
+-webkit-filter: blur(0px);
+transition: filter 0.5s ease, -webkit-filter 0.5s ease;
+pointer-events: auto;
+}
+
+#en.show {
+animation: slideDown 0.5s ease forwards;
+}
+
+ @keyframes slideDown {
+0% {
+transform: rotate(180deg) translateY(-40px);
+opacity: 0;
+}
+100% {
+transform: rotate(180deg) translateY(0);
+opacity: 1;
+}
+}
+
+input {
+all: unset;
+font-size: 1em;
+color: white;
+width: 100%;
+}
+
+input::placeholder {
+color: #ffffff !important;
+opacity: 1;
+}
+
+.mic.pulse {
+animation: pulseGrow 0.8s ease;
+}
+
+ @keyframes pulseGrow {
+0% { transform: scale(1); }
+50% { transform: scale(1.6); }
+100% { transform: scale(1); }
+}
+
+/* Currency App Styles */
+.currency-layer {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: transparent;
+opacity: 0;
+transition: opacity 0.8s ease;
+z-index: 5;
+overflow: hidden;
+pointer-events: none;
+}
+
+.currency-layer.active {
+opacity: 1;
+pointer-events: all;
+}
+
+.currency-content {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+height: 100%;
+gap: 220px;
+padding: 20px;
+}
+
+.currency-card {
+text-align: center;
+color: white;
+padding: 10px 20px;
+width: 100%;
+max-width: 800px;
+opacity: 0;
+transform: translateY(30px);
+transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.currency-layer.active .currency-card {
+opacity: 1;
+transform: translateY(0);
+}
+
+.amount-container {
+color: white !important;
+margin: 5px 0;
+cursor: pointer;
+transition: all 0.33s ease;
+min-height: 150px;
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+overflow: hidden;
+}
+
+.amount-container:hover {
+
+transform: scale(1.05);
+}
+
+.amount-display {
+font-size:80px;
+font-weight: 200;
+letter-spacing: 2px;
+line-height: 1;
+user-select: none;
+color: rgb(0, 0, 0) !important;
+transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+position: relative;
+z-index: 1;
+}
+
+.amount-input {
+background: transparent;
+border: none;
+color: rgb(0, 0, 0) !important;
+font-size: 80px;
+font-weight: 100;
+text-align: center;
+width: 100%;
+outline: none;
+letter-spacing: 2px;
+line-height: 1;
+display: none;
+transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+z-index: 20;
+position: relative;
+/* iOS optimizations */
+-webkit-appearance: none;
+-webkit-border-radius: 0;
+border-radius: 0;
+}
+
+.amount-input::placeholder {
+color: rgb(255, 255, 255) !important;
+}
+
+/* iOS numeric keyboard trigger */
+.amount-input {
+inputmode: decimal;
+pattern: "[0-9]*";
+}
+
+.datetime {
+font-size: 22px;
+font-weight: 220;
+opacity: 0.85;
+margin-top: 25px;
+color: rgba(26, 26, 26, 0.829);
+
+}
+
+.country-select {
+background: none;
+border: none;
+border-radius: 12px;
+padding: 1px 16px;
+font-size: 22px;
+font-weight: 300;
+outline: none;
+cursor: pointer;
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+transition: all 0.5s ease;
+min-width: 200px;
+text-align: center;
+text-align-last: center;
+-webkit-text-align-last: center;
+width: 100%;
+margin: 0 auto;
+display: block;
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+}
+
+.country-select:hover {
+transform: scale(1.1);
+}
+
+.country-select option {
+background: #2c3e50;
+color: white;
+padding: 10px;
+text-align: center;
+font-weight: 200;
+}
+
+.editing-mode .amount-display {
+display: none;
+}
+
+.editing-mode .amount-input {
+display: block;
+z-index: 30;
+}
+
+/* Dynamic font sizes */
+.amount-display.size-xs, .amount-input.size-xs { font-size: 48px; }
+.amount-display.size-sm, .amount-input.size-sm { font-size: 58px; }
+.amount-display.size-md, .amount-input.size-md { font-size: 72px; }
+.amount-display.size-lg, .amount-input.size-lg { font-size: 88px; }
+
+ @keyframes slideUpFade {
+0% {
+transform: translateY(30px);
+opacity: 0;
+}
+100% {
+transform: translateY(0);
+opacity: 1;
+}
+}
+
+.amount-update {
+animation: slideUpFade 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+ @keyframes fadeInOut {
+0%, 100% { opacity: 0.4; }
+50% { opacity: 0.8; }
+}
+
+/* Hexagon UI Styles */
+.hexagon-layer {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: center;
+background: rgba(0,0,0,0.3);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.5s ease;
+}
+
+.hexagon-layer.show {
+opacity: 1;
+pointer-events: auto;
+}
+
+.hexagon-container {
+position: relative;
+width: 400px;
+height: 400px;
+}
+
+.hexagon-layer.show .hexagon-container {
+animation: hexagonAppear 0.5s cubic-bezier(.45,1.5,.65,1) forwards;
+}
+
+ @keyframes hexagonAppear {
+from {
+transform: scale(1.5);
+opacity: 0;
+}
+to {
+transform: scale(1);
+opacity: 1;
+}
+}
+
+.hexagon-container .dot {
+position: absolute;
+width: 50px;
+height: 50px;
+border-radius: 50%;
+display: flex;
+justify-content: center;
+align-items: center;
+transform: translate(-50%, -50%);
+cursor: pointer;
+transition: transform 0.5s ease;
+}
+
+.hexagon-container .dot:hover {
+transform: translate(-50%, -50%) scale(1.1);
+}
+
+.hexagon-container .dot::after {
+content: '';
+width: 16px;
+height: 16px;
+border-radius: 50%;
+transition: all 0.3s ease;
+}
+
+.hexagon-container .dot:hover::after {
+width: 10px;
+height: 10px;
+}
+
+/* Exact colors from app.html */
+.hexagon-container .dot:nth-child(1) { top: 0; left: 50%; background-color: #ffffe6; }
+.hexagon-container .dot:nth-child(1)::after { background-color: #ebdf87; }
+
+.hexagon-container .dot:nth-child(2) { top: 25%; left: 86.6%; background-color: #e6fff2; }
+.hexagon-container .dot:nth-child(2)::after { background-color: #35e489; }
+
+.hexagon-container .dot:nth-child(3) { top: 75%; left: 86.6%; background-color: #e3f4ff; }
+.hexagon-container .dot:nth-child(3)::after { background-color: #1ad1ff; }
+
+.hexagon-container .dot:nth-child(4) { top: 100%; left: 50%; background-color: #ecddff; }
+.hexagon-container .dot:nth-child(4)::after { background-color: #d900ff; }
+
+.hexagon-container .dot:nth-child(5) { top: 75%; left: 13.4%; background-color: #ffccef; }
+.hexagon-container .dot:nth-child(5)::after { background-color: #ff00d0; }
+
+.hexagon-container .dot:nth-child(6) { top: 25%; left: 13.4%; background-color: #daedff; }
+.hexagon-container .dot:nth-child(6)::after { background-color: #0088ff; }
+
+/* iOS specific styles */
+_::-webkit-full-page-media, _:future, :root .amount-input {
+  -webkit-user-select: text;
+  -webkit-touch-callout: default;
+}
+
+</style>
+</head>
+<body>
+<!-- Translation Layer -->
+<div class="translation-layer">
+<div class="mic-wrapper" id="wrapper">
+<div class="dots-container" id="dotsContainer"></div>
+<div id="mic" class="mic"></div>
+<div class="selected-flag" id="selectedFlag"></div>
+</div>
+<div id="jp" class="not-blurred">
+<input id="inputText" type="text"
+placeholder="ここに入力"
+autocomplete="off"
+autocorrect="off"
+autocapitalize="off"
+spellcheck="false"
+name="no_save" />
+</div>
+<div id="en" class="not-blurred"></div>
+</div>
+
+<!-- Back Button - Always on top -->
+<div class="back-button" id="backButton">←</div>
+
+<!-- Currency Layer -->
+<div class="currency-layer" id="currencyLayer">
+<div class="currency-content">
+<div class="currency-card" id="card1">
+<select class="country-select" id="fromSelect" onchange="selectCountry('from', this.value)">
+<option value="🇺🇸">United States</option>
+<option value="🇯🇵">日本</option>
+<option value="🇨🇳">中国</option>
+<option value="🇰🇷">대한민국</option>
+<option value="🇪🇸">España</option>
+<option value="🇫🇷">France</option>
+<option value="🇷🇺">Россия</option>
+<option value="🇸🇦">المملكة العربية السعودية</option>
+<option value="🇮🇳">भारत</option>
+<option value="🇧🇷">Brasil</option>
+</select>
+<div class="amount-container" onclick="enableEdit('from')">
+<div class="amount-display size-lg" id="fromAmountDisplay">$100</div>
+<input type="text" class="amount-input size-lg" id="fromAmountInput" value="100" oninput="validateInput(this)" onblur="disableEdit('from')" onkeydown="handleEnterKey(event, 'from')" inputmode="decimal" pattern="[0-9]*">
+</div>
+<div class="datetime" id="fromDateTime">Saturday, Sep 9 10:00</div>
+</div>
+<div class="currency-card" id="card2">
+<select class="country-select" id="toSelect" onchange="selectCountry('to', this.value)">
+<option value="🇺🇸">United States</option>
+<option value="🇯🇵" selected>日本</option>
+<option value="🇨🇳">中国</option>
+<option value="🇰🇷">대한민국</option>
+<option value="🇪🇸">España</option>
+<option value="🇫🇷">France</option>
+<option value="🇷🇺">Россия</option>
+<option value="🇸🇦">المملكة العربية السعودية</option>
+<option value="🇮🇳">भारत</option>
+<option value="🇧🇷">Brasil</option>
+</select>
+<div class="amount-container" onclick="enableEdit('to')">
+<div class="amount-display size-lg" id="toAmountDisplay">¥15,000</div>
+<input type="text" class="amount-input size-lg" id="toAmountInput" value="15000" oninput="validateInput(this)" onblur="disableEdit('to')" onkeydown="handleEnterKey(event, 'to')" inputmode="decimal" pattern="[0-9]*">
+</div>
+<div class="datetime" id="toDateTime">9月9日 土曜日 2:00</div>
+</div>
+</div>
+</div>
+
+<!-- Hexagon UI -->
+<div class="hexagon-layer" id="hexagonLayer">
+<div class="hexagon-container">
+<div class="dot"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+</div>
+</div>
+
+
+
+<!-- Haptic script -->
+<script src="ios-haptics.js"></script>
+
+<script>
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('Service Worker: Registered'))
+      .catch(err => console.log(`Service Worker: Error: ${'err'}`));
+  });
+}
+</script>
+
+<script>
+// DOM Elements
+const micEl = document.getElementById("mic");
+const wrapperEl = document.getElementById("wrapper");
+const dotsContainer = document.getElementById("dotsContainer");
+const selectedFlag = document.getElementById("selectedFlag");
+const backButton = document.getElementById("backButton");
+const jpEl = document.getElementById("jp");
+const enEl = document.getElementById("en");
+const inputEl = document.getElementById("inputText");
+const currencyLayer = document.getElementById("currencyLayer");
+const hexagonLayer = document.getElementById("hexagonLayer");
+
+// State Variables
+let isJpToEn = true;
+let enterCount = 0;
+let micPressed = false;
+let isMovedUp = false;
+let selectedLanguage = null;
+let isCurrencyActive = false;
+let isHexagonActive = false;
+
+// iOS Detection
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+// Haptic Functions
+const playHapticConfirm = () => window.haptic?.confirm();
+const playHapticBurst = () => {
+if (!window.haptic) return;
+const delay = 40;
+for (let i = 0; i < 5; i++) {
+setTimeout(() => window.haptic.error(), i * delay);
+}
+};
+const playHapticUltraBurst = () => {
+if (!window.haptic) return;
+const delay = 30;
+for (let i = 0; i < 5; i++) {
+setTimeout(() => window.haptic.error(), i * delay);
+}
+};
+
+// Data
+const languageMap = {
+    '🇺🇸': 'en-US', '🇯🇵': 'ja-JP', '🇨🇳': 'zh-CN', '🇰🇷': 'ko-KR', '🇪🇸': 'es-ES',
+    '🇫🇷': 'fr-FR', '🇷🇺': 'ru-RU', '🇸🇦': 'ar-SA', '🇮🇳': 'hi-IN', '🇧🇷': 'pt-BR'
+};
+const translationMap = {
+    '🇺🇸': 'en', '🇯🇵': 'ja', '🇨🇳': 'zh', '🇰🇷': 'ko', '🇪🇸': 'es',
+    '🇫🇷': 'fr', '🇷🇺': 'ru', '🇸🇦': 'ar', '🇮🇳': 'hi', '🇧🇷': 'pt'
+};
+const countries = {
+    '🇺🇸': { code: 'USD', symbol: '$', timezone: 'America/New_York', names: { ja: 'アメリカ', en: 'United States' }},
+    '🇯🇵': { code: 'JPY', symbol: '¥', timezone: 'Asia/Tokyo', names: { ja: '日本', en: 'Japan' }},
+    '🇨🇳': { code: 'CNY', symbol: '¥', timezone: 'Asia/Shanghai', names: { ja: '中国', en: 'China' }},
+    '🇰🇷': { code: 'KRW', symbol: '₩', timezone: 'Asia/Seoul', names: { ja: '韓国', en: 'South Korea' }},
+    '🇪🇸': { code: 'EUR', symbol: '€', timezone: 'Europe/Madrid', names: { ja: 'スペイン', en: 'Spain' }},
+    '🇫🇷': { code: 'EUR', symbol: '€', timezone: 'Europe/Paris', names: { ja: 'フランス', en: 'France' }},
+    '🇷🇺': { code: 'RUB', symbol: '₽', timezone: 'Europe/Moscow', names: { ja: 'ロシア', en: 'Russia' }},
+    '🇸🇦': { code: 'SAR', symbol: '﷼', timezone: 'Asia/Riyadh', names: { ja: 'サウジアラビア', en: 'Saudi Arabia' }},
+    '🇮🇳': { code: 'INR', symbol: '₹', timezone: 'Asia/Kolkata', names: { ja: 'インド', en: 'India' }},
+    '🇧🇷': { code: 'BRL', symbol: 'R$', timezone: 'America/Sao_Paulo', names: { ja: 'ブラジル', en: 'Brazil' }}
+};
+let fromCountry = '🇺🇸';
+let toCountry = '🇯🇵';
+let exchangeRates = {};
+
+// Layer Management Functions
+function showCurrencyLayer() {
+if (isCurrencyActive) return;
+currencyLayer.classList.add('active');
+isCurrencyActive = true;
+blurTranslationText();
+fetchExchangeRates();
+updateDateTime();
+}
+
+function hideCurrencyLayer() {
+if (!isCurrencyActive) return;
+currencyLayer.classList.remove('active');
+isCurrencyActive = false;
+unblurTranslationText();
+}
+
+function showHexagonLayer() {
+if(isHexagonActive) return;
+hexagonLayer.classList.add('show');
+isHexagonActive = true;
+}
+
+function hideHexagonLayer() {
+if(!isHexagonActive) return;
+hexagonLayer.classList.remove('show');
+isHexagonActive = false;
+}
+
+function blurTranslationText() {
+jpEl.classList.remove('not-blurred');
+jpEl.classList.add('blurred');
+enEl.classList.remove('not-blurred');
+enEl.classList.add('blurred');
+}
+
+function unblurTranslationText() {
+jpEl.classList.remove('blurred');
+jpEl.classList.add('not-blurred');
+enEl.classList.remove('blurred');
+enEl.classList.add('not-blurred');
+}
+
+// Mic and Layout Management
+function moveMicUpAndShowCurrency() {
+if (isMovedUp) return;
+micEl.classList.remove("shrunk");
+micEl.classList.add("mini");
+setTimeout(() => {
+wrapperEl.classList.add("moved-up");
+micEl.classList.add("moved-up");
+isMovedUp = true;
+dotsContainer.classList.remove("show");
+setTimeout(() => backButton.classList.add("show"), 250);
+setTimeout(showCurrencyLayer, 300);
+}, 500);
+}
+
+function closeAllAndReset() {
+hideCurrencyLayer();
+hideHexagonLayer();
+backButton.classList.remove("show");
+setTimeout(() => {
+wrapperEl.classList.remove("moved-up");
+micEl.classList.remove("moved-up", "mini");
+isMovedUp = false;
+micPressed = false;
+if (selectedLanguage) {
+const flagKey = Object.keys(translationMap).find(key => translationMap[key] === selectedLanguage);
+if (flagKey) {
+selectedFlag.textContent = flagKey;
+selectedFlag.style.fontSize = "24px";
+selectedFlag.style.opacity = "0.7";
+selectedFlag.classList.remove("hide");
+}
+}
+}, 250);
+}
+
+// Event Listeners
+document.addEventListener('keydown', function(e) {
+if (e.key === 'ArrowUp' || (e.metaKey && e.key === 't')) {
+e.preventDefault();
+if (isCurrencyActive) {
+showHexagonLayer();
+} else {
+moveMicUpAndShowCurrency();
+}
+} else if (e.key === 'ArrowDown' || e.key === 'Escape') {
+e.preventDefault();
+if (isHexagonActive) {
+hideHexagonLayer();
+} else {
+closeAllAndReset();
+}
+}
+});
+
+wrapperEl.addEventListener("click", (e) => {
+playHapticBurst();
+if (isMovedUp) {
+return;
+}
+if (!micPressed) {
+micEl.classList.add("shrunk");
+dotsContainer.classList.add("show");
+micPressed = true;
+} else {
+moveMicUpAndShowCurrency();
+}
+});
+
+backButton.addEventListener("click", (e) => {
+playHapticConfirm();
+e.preventDefault();
+e.stopPropagation();
+closeAllAndReset();
+});
+
+hexagonLayer.addEventListener('click', (e) => {
+if (e.target === hexagonLayer) {
+hideHexagonLayer();
+}
+});
+
+document.querySelectorAll('.hexagon-container .dot').forEach(dot => {
+dot.addEventListener('click', playHapticConfirm);
+});
+
+enEl.addEventListener("click", () => {
+playHapticUltraBurst();
+const text = enEl.textContent;
+if (!text) return;
+const langToSpeak = selectedLanguage ? languageMap[Object.keys(translationMap).find(key => translationMap[key] === selectedLanguage)] : (isJpToEn ? 'en-US' : 'ja-JP');
+speakText(text, langToSpeak);
+});
+
+inputEl.addEventListener('focus', playHapticUltraBurst);
+
+inputEl.addEventListener("keydown", (e) => {
+if (e.key === "Enter") {
+enterCount++;
+const input = inputEl.value.trim().toLowerCase();
+if (isJpToEn && (input === "english" || input === "en")) swapDirection();
+else if (!isJpToEn && (input.includes("日本語") || input.includes("にほんご"))) swapDirection();
+if (enterCount >= 3) resetAll();
+}
+});
+
+inputEl.addEventListener("input", async () => {
+enterCount = 0;
+const text = inputEl.value;
+const translated = await translate(text);
+enEl.textContent = translated;
+enEl.classList.remove("show");
+void enEl.offsetWidth;
+enEl.classList.add("show");
+micEl.classList.remove("pulse");
+void micEl.offsetWidth;
+micEl.classList.add("pulse");
+});
+
+// Translation Functions
+async function translate(text) {
+if (!text) return "";
+try {
+let from = isJpToEn ? "ja" : "en";
+let to = selectedLanguage || (isJpToEn ? "en" : "ja");
+const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`);
+if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+const data = await res.json();
+return data.responseData?.translatedText || "";
+} catch (error) {
+console.error('Translation error:', error);
+return "Translation error";
+}
+}
+
+function speakText(text, languageCode) {
+if ('speechSynthesis' in window) {
+try {
+speechSynthesis.cancel();
+const utterance = new SpeechSynthesisUtterance(text);
+utterance.lang = languageCode;
+speechSynthesis.speak(utterance);
+} catch (error) {
+console.error('Speech synthesis error:', error);
+}
+}
+}
+
+function translateCurrentInput() {
+if (inputEl.value.trim()) {
+inputEl.dispatchEvent(new Event('input'));
+}
+}
+
+// Dots and Flag Selection
+function createDots() {
+const flags = Object.keys(countries);
+dotsContainer.innerHTML = '';
+for (let i = 0; i < flags.length; i++) {
+const dot = document.createElement('div');
+dot.className = 'dot';
+dot.textContent = flags[i];
+const angle = (i * 360) / flags.length;
+const radian = (angle * Math.PI) / 180;
+const radius = 150;
+dot.style.left = `${Math.cos(radian) * radius + 150 - 9}px`;
+dot.style.top = `${Math.sin(radian) * radius + 150 - 9}px`;
+dot.addEventListener('click', (e) => {
+playHapticConfirm();
+e.stopPropagation();
+selectFlag(flags[i]);
+});
+dotsContainer.appendChild(dot);
+}
+}
+
+function selectFlag(flag) {
+selectedLanguage = translationMap[flag];
+dotsContainer.classList.remove("show");
+selectedFlag.textContent = flag;
+selectedFlag.classList.add("show");
+fromCountry = flag;
+document.getElementById('fromSelect').value = flag;
+updateDateTime();
+convertCurrency('from', true);
+setTimeout(() => {
+selectedFlag.classList.add("hide");
+setTimeout(() => {
+selectedFlag.style.fontSize = "24px";
+selectedFlag.style.opacity = "0.7";
+selectedFlag.classList.remove("hide");
+}, 500);
+}, 500);
+micPressed = false;
+translateCurrentInput();
+}
+
+// UI Control Functions
+function swapDirection() {
+isJpToEn = !isJpToEn;
+jpEl.style.top = isJpToEn ? "" : "30px";
+jpEl.style.bottom = isJpToEn ? "30px" : "";
+enEl.style.top = isJpToEn ? "30px" : "";
+enEl.style.bottom = isJpToEn ? "" : "30px";
+enEl.style.transform = isJpToEn ? "rotate(180deg)" : "rotate(0deg)";
+inputEl.placeholder = isJpToEn ? "ここに入力" : "Type here...";
+resetAll();
+}
+
+function resetAll() {
+inputEl.value = "";
+enEl.textContent = "";
+enEl.classList.remove("show");
+enterCount = 0;
+inputEl.focus();
+}
+
+// Currency Functions
+function formatAmount(amount) {
+if (amount >= 1000) return Math.round(amount).toLocaleString();
+return parseFloat(amount.toFixed(2)).toString();
+}
+
+function updateDisplay(type, amount, animate = false) {
+const targetCountry = type === 'from' ? fromCountry : toCountry;
+const symbol = countries[targetCountry].symbol;
+const displayText = `${symbol}${formatAmount(amount)}`;
+const displayElement = document.getElementById(`${type}AmountDisplay`);
+const inputElement = document.getElementById(`${type}AmountInput`);
+if (!displayElement.parentElement.classList.contains('editing-mode')) {
+applySizeClass(displayElement, displayText);
+applySizeClass(inputElement, displayText);
+displayElement.textContent = displayText;
+inputElement.value = amount;
+if (animate) addSlideUpAnimation(displayElement);
+}
+}
+
+function updateDisplayForced(type, amount, animate = false) {
+const targetCountry = type === 'from' ? fromCountry : toCountry;
+const symbol = countries[targetCountry].symbol;
+const displayText = `${symbol}${formatAmount(amount)}`;
+const displayElement = document.getElementById(`${type}AmountDisplay`);
+const inputElement = document.getElementById(`${type}AmountInput`);
+applySizeClass(displayElement, displayText);
+applySizeClass(inputElement, displayText);
+displayElement.textContent = displayText;
+inputElement.value = amount;
+if (animate) addSlideUpAnimation(displayElement);
+}
+
+function convertCurrency(source, animate = false) {
+const fromInput = document.getElementById('fromAmountInput');
+const toInput = document.getElementById('toAmountInput');
+const fromAmount = parseFloat(fromInput.value.replace(/,/g, '')) || 0;
+const toAmount = parseFloat(toInput.value.replace(/,/g, '')) || 0;
+const fromCode = countries[fromCountry].code;
+const toCode = countries[toCountry].code;
+if (!exchangeRates[fromCode] || !exchangeRates[toCode]) return;
+try {
+if (source === 'from') {
+const convertedAmount = (fromAmount / exchangeRates[fromCode]) * exchangeRates[toCode];
+updateDisplay('to', convertedAmount, animate);
+} else {
+const convertedAmount = (toAmount / exchangeRates[toCode]) * exchangeRates[fromCode];
+updateDisplay('from', convertedAmount, animate);
+}
+} catch (e) { 
+console.error('Conversion error:', e); 
+}
+}
+
+async function fetchExchangeRates() {
+try {
+const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+if (!response.ok) throw new Error('Primary API failed');
+const data = await response.json();
+exchangeRates = data.rates;
+} catch (error) {
+try {
+const response = await fetch('https://open.er-api.com/v6/latest/USD');
+if (!response.ok) throw new Error('Backup API failed');
+const data = await response.json();
+exchangeRates = data.rates;
+} catch (e) {
+console.error('All currency APIs failed:', e);
+exchangeRates = { USD: 1, JPY: 150, EUR: 0.9, CNY: 7.2, KRW: 1350, INR: 83, BRL: 5.1, RUB: 90, SAR: 3.75 };
+}
+}
+exchangeRates.USD = 1;
+convertCurrency('from');
+}
+
+// iOS Optimized Currency Input Functions
+function enableEdit(type) {
+playHapticBurst();
+const container = document.getElementById(`${type}AmountDisplay`).parentElement;
+const input = document.getElementById(`${type}AmountInput`);
+const display = document.getElementById(`${type}AmountDisplay`);
+const symbol = countries[type === 'from' ? fromCountry : toCountry].symbol;
+input.value = display.textContent.replace(symbol, '').replace(/,/g, '');
+applySizeClass(input, input.value);
+container.classList.add('editing-mode');
+
+// iOS specific optimizations
+if (isIOS) {
+input.setAttribute('type', 'number');
+}
+
+setTimeout(() => { 
+input.focus(); 
+input.select(); 
+if (isIOS) {
+input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+}, 50);
+}
+
+function disableEdit(type) {
+setTimeout(() => {
+const container = document.getElementById(`${type}AmountDisplay`).parentElement;
+if (!container.classList.contains('editing-mode')) return;
+const input = document.getElementById(`${type}AmountInput`);
+input.value = convertFullWidthToHalf(input.value);
+const amount = parseFloat(input.value.replace(/,/g, '')) || 0;
+updateDisplayForced(type, amount, true);
+container.classList.remove('editing-mode');
+convertCurrency(type, true);
+}, 150);
+}
+
+function handleEnterKey(event, type) {
+if (event.key === 'Enter' || event.key === 'Return') {
+event.preventDefault();
+document.getElementById(`${type}AmountInput`).blur();
+}
+}
+
+function selectCountry(type, flag) {
+playHapticConfirm();
+if (type === 'from') {
+fromCountry = flag;
+} else {
+toCountry = flag;
+}
+updateDateTime();
+convertCurrency('from', true);
+}
+
+function updateDateTime() {
+try {
+const fromTz = countries[fromCountry].timezone;
+const toTz = countries[toCountry].timezone;
+const fromTime = new Date().toLocaleString('en-US', { 
+timeZone: fromTz, 
+weekday: 'short', 
+month: 'short', 
+day: 'numeric', 
+hour: 'numeric', 
+minute: '2-digit' 
+});
+const currentLangForDate = countries[toCountry].names.ja ? 'ja-JP' : 'en-US';
+const toTime = new Date().toLocaleString(currentLangForDate, { 
+timeZone: toTz, 
+month: 'numeric', 
+day: 'numeric', 
+weekday: 'short', 
+hour: 'numeric', 
+minute: '2-digit' 
+});
+document.getElementById('fromDateTime').textContent = fromTime;
+document.getElementById('toDateTime').textContent = toTime;
+} catch(e) { 
+console.error("Date update failed", e); 
+}
+}
+
+// Utility Functions
+function getFontSizeClass(text) {
+const len = text.length;
+if (len > 15) return 'size-xs'; 
+if (len > 10) return 'size-sm';
+if (len > 7) return 'size-md'; 
+return 'size-lg';
+}
+
+function applySizeClass(element, text) {
+const newSizeClass = getFontSizeClass(text);
+element.classList.remove('size-xs', 'size-sm', 'size-md', 'size-lg');
+element.classList.add(newSizeClass);
+}
+
+function addSlideUpAnimation(element) {
+element.classList.add('amount-update');
+setTimeout(() => element.classList.remove('amount-update'), 600);
+}
+
+function convertFullWidthToHalf(str) {
+return str.replace(/[０-９．]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)).replace(/，/g, ',');
+}
+
+function validateInput(input) {
+input.value = input.value.replace(/[^0-9.,０-９．，]/g, '');
+}
+
+// App Initialization
+function initApp() {
+createDots();
+resetAll();
+document.getElementById('fromSelect').value = fromCountry;
+document.getElementById('toSelect').value = toCountry;
+if ('speechSynthesis' in window) {
+speechSynthesis.getVoices();
+}
+fetchExchangeRates();
+updateDateTime();
+
+// iOS PWA specific initialization
+if (isIOS && window.navigator.standalone) {
+document.body.style.paddingTop = '20px'; // Status bar compensation
+}
+}
+
+// PWA Install Prompt (iOS Safari)
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+e.preventDefault();
+deferredPrompt = e;
+});
+
+// iOS Viewport Height Fix
+function setVH() {
+let vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+window.addEventListener('load', () => {
+  setVH();
+  initApp();
+});
+window.addEventListener('resize', setVH);
+window.addEventListener('orientationchange', setVH);
+
+  document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+  });
+</script>
+</body>
+</html>
