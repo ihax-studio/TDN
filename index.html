@@ -1,17 +1,14 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>TranslaTDN + Currency</title>
-<meta name="theme-color" content="#0060f6">
-<link rel="manifest" href="manifest.json">
+<!-- saved from url=(0030)https://teskkk.netlify.app/app -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-<link rel="apple-touch-icon" sizes="512x512" href="icon810.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="TranslaTDN">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TranslaTDN + Currency</title>
 <style>
 * {
 margin: 0;
@@ -80,7 +77,6 @@ radial-gradient(at 63% 5%, rgb(0 217 62 / 33%) 0px, transparent 50%),
 radial-gradient(at 6% 40%, rgb(0 83 255 / 48%) 0px, transparent 50%);
 background-color: #0060f630;
 height: 100vh;
-height: calc(var(--vh, 1vh) * 100);
 overflow: hidden;
 touch-action: none;
 -webkit-touch-callout: none;
@@ -88,6 +84,278 @@ touch-action: none;
 -webkit-tap-highlight-color: transparent;
 overscroll-behavior: none;
 position: relative;
+transition: background-color 1s ease;
+}
+
+body.notification-shown {
+background-color: #000000;
+background-image: none;
+}
+
+/* PWA Notification Styles */
+.pwa-notification-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 10000;
+display: flex;
+justify-content: center;
+align-items: center;
+background: rgba(0, 0, 0, 0.95);
+opacity: 0;
+pointer-events: none;
+transition: opacity 1s ease;
+}
+
+.pwa-notification-overlay.show {
+opacity: 1;
+pointer-events: auto;
+}
+
+.pwa-notification-container {
+position: relative;
+width: 312px;
+}
+
+.pwa-center-stage {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 120px;
+height: 120px;
+animation: stageTransition 0.8s ease-out 1.5s forwards;
+}
+
+.pwa-center-icon {
+width: 120px;
+height: 120px;
+background: linear-gradient(180deg, #ff30f8 0%, #ff004c 100%);
+border-radius: 32px;
+display: flex;
+justify-content: center;
+align-items: center;
+box-shadow: 0 20px 40px rgba(255, 59, 48, 0.4), 0 8px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+opacity: 0;
+transform: translateY(50px) scale(0.8);
+animation: centerIconAppear 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+position: relative;
+}
+
+.pwa-center-icon::before {
+content: '😍';
+font-size: 64px;
+filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+z-index: 2;
+}
+
+.pwa-center-icon::after {
+content: '';
+position: absolute;
+top: -8px;
+left: -8px;
+right: -8px;
+bottom: -8px;
+background: linear-gradient(135deg, #ff3b30, #ff9500);
+border-radius: 40px;
+opacity: 0.2;
+z-index: -1;
+filter: blur(16px);
+animation: iconGlow 2s ease-in-out infinite alternate;
+}
+
+.pwa-center-title {
+position: absolute;
+top: 188px;
+left: 50%;
+transform: translateX(-50%);
+font-size: 25px;
+font-weight: 600;
+color: white;
+white-space: nowrap;
+opacity: 0;
+transform: translateX(-50%) translateY(20px);
+animation: centerTitleAppear 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
+text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.pwa-notification-card {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 100%;
+border-radius: 77px;
+backdrop-filter: blur(40px);
+border: 0.5px solid rgba(255, 255, 255, 0.12);
+box-shadow: 0 32px 64px rgba(0, 0, 0, 0.8), 0 8px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+opacity: 0;
+transform: translate(-50%, -50%) scale(0.92) translateY(24px);
+animation: notificationAppear 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2.5s forwards;
+cursor: pointer;
+transition: all 0.5s ease;
+}
+
+.pwa-notification-card.move-up {
+transform: translate(-50%, -200px) scale(0.8);
+}
+
+.pwa-notification-card.fade-out {
+opacity: 0;
+transform: translate(-50%, -300px) scale(0.7);
+}
+
+.pwa-notification-content {
+padding: 10px 12px;
+width: 100%;
+display: flex;
+align-items: flex-start;
+gap: 8px;
+}
+
+.pwa-notification-text {
+flex: 1;
+min-width: 0;
+}
+
+.pwa-app-name {
+font-size: 13px;
+font-weight: 600;
+color: rgba(255, 255, 255, 0.6);
+margin-bottom: 2px;
+letter-spacing: -0.08px;
+}
+
+.pwa-notification-title {
+line-height: 1.2;
+font-size: 17px;
+font-weight: 600;
+color: white;
+margin-bottom: 4px;
+letter-spacing: -0.24px;
+text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.pwa-notification-body {
+font-size: 15px;
+color: rgba(255, 255, 255, 0.82);
+line-height: 1.1;
+letter-spacing: -0.12px;
+}
+
+.pwa-notification-body .line {
+opacity: 0;
+transform: translateY(8px);
+animation: lineFadeUp 0.5s ease forwards;
+}
+
+.pwa-notification-icon {
+right: 2px;
+position: relative;
+width: 56px;
+height: 56px;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-shrink: 0;
+border-radius: 33px;
+background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 50%, #ff9500 100%);
+box-shadow: 0px 8px 20px rgba(255, 59, 48, 0.35), 0px 2px 8px rgba(0, 0, 0, 0.25), inset 0px 1px 0px rgba(255, 255, 255, 0.15);
+}
+
+.pwa-notification-icon::before {
+content: '🥰';
+font-size: 22px;
+line-height: 1;
+filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.3));
+position: relative;
+z-index: 1;
+}
+
+.pwa-notification-icon::after {
+content: '';
+position: absolute;
+top: -3px;
+left: -3px;
+right: -3px;
+bottom: -3px;
+border-radius: 33px;
+background: linear-gradient(135deg, #ff3b30, #ff9500);
+opacity: 0.15;
+filter: blur(8px);
+z-index: 0;
+}
+
+@keyframes centerIconAppear {
+0% { opacity: 0; transform: translateY(50px) scale(0.8); }
+70% { opacity: 1; transform: translateY(-5px) scale(1.05); }
+100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes centerTitleAppear {
+0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes stageTransition {
+0% { opacity: 1; }
+100% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+}
+
+@keyframes notificationAppear {
+0% { opacity: 0; transform: translate(-50%, -50%) scale(0.92) translateY(24px); }
+60% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.02) translateY(-2px); }
+100% { opacity: 1; transform: translate(-50%, -50%) scale(1) translateY(0); }
+}
+
+@keyframes iconGlow {
+0% { opacity: 0.15; transform: scale(1); }
+100% { opacity: 0.3; transform: scale(1.05); }
+}
+
+@keyframes lineFadeUp {
+from { opacity: 0; transform: translateY(8px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.pwa-notification-card::before {
+content: '';
+position: absolute;
+top: -1px;
+left: -1px;
+right: -1px;
+bottom: -1px;
+background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 107, 107, 0.2) 50%, rgba(255, 149, 0, 0.1) 100%);
+border-radius: 55px;
+opacity: 0;
+animation: notificationGlow 1.2s ease-out 3s forwards;
+}
+
+.pwa-notification-container::before {
+content: '';
+position: absolute;
+top: -60px;
+left: 50%;
+transform: translateX(-50%);
+width: 240px;
+height: 240px;
+background: radial-gradient(circle, rgba(255, 59, 48, 0.08) 0%, transparent 70%);
+border-radius: 50%;
+opacity: 0;
+animation: ambientGlow 2.5s ease-out 1.5s forwards;
+}
+
+@keyframes notificationGlow {
+0% { opacity: 0; }
+50% { opacity: 0.8; }
+100% { opacity: 0.4; }
+}
+
+@keyframes ambientGlow {
+0% { opacity: 0; transform: translateX(-50%) scale(0.7); }
+100% { opacity: 1; transform: translateX(-50%) scale(1); }
 }
 
 /* Translation App Styles */
@@ -110,7 +378,7 @@ z-index: 8;
 }
 
 .mic-wrapper.moved-up {
-z-index: 101;
+    z-index: 101;
 }
 
 .mic {
@@ -162,7 +430,7 @@ opacity: 1;
 animation: dotsAppear .5s cubic-bezier(.45,1.5,.65,1);
 }
 
- @keyframes dotsAppear {
+@keyframes dotsAppear {
 0% {
 opacity: 0;
 transform: translate(-50%, -50%) scale(1.5);
@@ -223,8 +491,9 @@ transform: translate(-50%, -50%) scale(0.01);
 width: 120px;
 height: 120px;
 background-color: #ffffff00;
-backdrop-filter: blur(2px);
--webkit-backdrop-filter: blur(3px);
+text-shadow: 2px 1px 8px rgb(0 0 0 / 64%);
+backdrop-filter: blur(7px);
+-webkit-backdrop-filter: blur(5px);
 box-shadow:
 inset 2px 5px 2px rgb(0 0 0 / 13%),
 inset -1px -2px 1px rgb(255 255 255 / 43%),
@@ -245,7 +514,7 @@ font-size: 48px;
 color: white;
 cursor: pointer;
 z-index: 9999 !important;
-pointer-events: none !important;
+pointer-events: auto !important;
 }
 
 .back-button.show {
@@ -253,10 +522,9 @@ transform: translate(-50%, -50%) scale(1);
 pointer-events: auto !important;
 }
 
-/* Translation text elements with blur functionality */
 #jp, #en {
 position: absolute;
-font-size:3.3em;
+font-size:3.1em;
 color: white;
 max-width: calc(100vw - 60px);
 width: 80vh;
@@ -267,9 +535,9 @@ z-index: 1;
 }
 
 #jp {
-font-size:3em;
-bottom: 27px;
-left: 27px;
+font-size:2.9em;
+bottom: 36px;
+left: 33px;
 overflow-x: auto;
 white-space: nowrap;
 }
@@ -287,10 +555,9 @@ user-select: text;
 white-space: pre-wrap;
 }
 
-/* Blur states for translation text */
 #jp.blurred, #en.blurred {
-filter: blur(5px);
--webkit-filter: blur(3px);
+filter: blur(10px);
+-webkit-filter: blur(10px);
 transition: filter 0.5s ease, -webkit-filter 0.5s ease;
 pointer-events: none;
 }
@@ -306,7 +573,7 @@ pointer-events: auto;
 animation: slideDown 0.5s ease forwards;
 }
 
- @keyframes slideDown {
+@keyframes slideDown {
 0% {
 transform: rotate(180deg) translateY(-40px);
 opacity: 0;
@@ -326,6 +593,7 @@ width: 100%;
 
 input::placeholder {
 color: #ffffff !important;
+text-shadow: 0 0 15px #9c9c9c42;
 opacity: 1;
 }
 
@@ -333,13 +601,12 @@ opacity: 1;
 animation: pulseGrow 0.8s ease;
 }
 
- @keyframes pulseGrow {
+@keyframes pulseGrow {
 0% { transform: scale(1); }
 50% { transform: scale(1.6); }
 100% { transform: scale(1); }
 }
 
-/* Currency App Styles */
 .currency-layer {
 position: absolute;
 top: 0;
@@ -365,14 +632,14 @@ flex-direction: column;
 justify-content: center;
 align-items: center;
 height: 100%;
-gap: 220px;
+gap: 200px;
 padding: 20px;
 }
 
 .currency-card {
 text-align: center;
 color: white;
-padding: 10px 20px;
+padding: 50px 20px;
 width: 100%;
 max-width: 800px;
 opacity: 0;
@@ -390,7 +657,7 @@ color: white !important;
 margin: 5px 0;
 cursor: pointer;
 transition: all 0.33s ease;
-min-height: 150px;
+min-height: 120px;
 display: flex;
 align-items: center;
 justify-content: center;
@@ -399,17 +666,17 @@ overflow: hidden;
 }
 
 .amount-container:hover {
-
+text-shadow: 0 2px 22px #00000033;
 transform: scale(1.05);
 }
 
 .amount-display {
-font-size:80px;
-font-weight: 200;
+font-size: 88px;
+font-weight: 300;
 letter-spacing: 2px;
 line-height: 1;
 user-select: none;
-color: rgb(0, 0, 0) !important;
+color: rgba(0, 0, 0, 0.777) !important;
 transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 position: relative;
 z-index: 1;
@@ -418,9 +685,9 @@ z-index: 1;
 .amount-input {
 background: transparent;
 border: none;
-color: rgb(0, 0, 0) !important;
-font-size: 80px;
-font-weight: 100;
+color: rgba(0, 0, 0, 0.777) !important;
+font-size: 88px;
+font-weight: 300;
 text-align: center;
 width: 100%;
 outline: none;
@@ -430,20 +697,10 @@ display: none;
 transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 z-index: 20;
 position: relative;
-/* iOS optimizations */
--webkit-appearance: none;
--webkit-border-radius: 0;
-border-radius: 0;
 }
 
 .amount-input::placeholder {
 color: rgb(255, 255, 255) !important;
-}
-
-/* iOS numeric keyboard trigger */
-.amount-input {
-inputmode: decimal;
-pattern: "[0-9]*";
 }
 
 .datetime {
@@ -451,17 +708,18 @@ font-size: 22px;
 font-weight: 220;
 opacity: 0.85;
 margin-top: 25px;
-color: rgba(26, 26, 26, 0.829);
-
+color: rgb(51, 51, 51);
+text-shadow: 0 1px 8px #00000055;
 }
 
 .country-select {
 background: none;
 border: none;
 border-radius: 12px;
-padding: 1px 16px;
-font-size: 22px;
-font-weight: 300;
+color: rgb(59, 59, 59) !important;
+padding: 12px 16px;
+font-size: 20px;
+font-weight: 220;
 outline: none;
 cursor: pointer;
 backdrop-filter: blur(10px);
@@ -481,10 +739,10 @@ appearance: none;
 
 .country-select:hover {
 transform: scale(1.1);
+text-shadow: 0 8px 2px #0000001f;
 }
 
 .country-select option {
-background: #2c3e50;
 color: white;
 padding: 10px;
 text-align: center;
@@ -500,13 +758,12 @@ display: block;
 z-index: 30;
 }
 
-/* Dynamic font sizes */
 .amount-display.size-xs, .amount-input.size-xs { font-size: 48px; }
 .amount-display.size-sm, .amount-input.size-sm { font-size: 58px; }
 .amount-display.size-md, .amount-input.size-md { font-size: 72px; }
 .amount-display.size-lg, .amount-input.size-lg { font-size: 88px; }
 
- @keyframes slideUpFade {
+@keyframes slideUpFade {
 0% {
 transform: translateY(30px);
 opacity: 0;
@@ -521,89 +778,98 @@ opacity: 1;
 animation: slideUpFade 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.instruction-overlay {
+position: absolute;
+bottom: 30px;
+left: 50%;
+transform: translateX(-50%);
+color: white;
+text-align: center;
+font-size: 14px;
+opacity: 0.7;
+z-index: 3;
+animation: fadeInOut 3s ease-in-out infinite;
+}
 
-
- @keyframes fadeInOut {
+@keyframes fadeInOut {
 0%, 100% { opacity: 0.4; }
 50% { opacity: 0.8; }
 }
 
-/* Hexagon UI Styles */
 .hexagon-layer {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-z-index: 100;
-display: flex;
-align-items: center;
-justify-content: center;
-background: rgba(0,0,0,0.3);
-backdrop-filter: blur(10px);
--webkit-backdrop-filter: blur(10px);
-opacity: 0;
-pointer-events: none;
-transition: opacity 0.5s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
 }
 
 .hexagon-layer.show {
-opacity: 1;
-pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .hexagon-container {
-position: relative;
-width: 400px;
-height: 400px;
+  position: relative;
+  width: 400px;
+  height: 400px;
 }
 
 .hexagon-layer.show .hexagon-container {
-animation: hexagonAppear 0.5s cubic-bezier(.45,1.5,.65,1) forwards;
+    animation: hexagonAppear 0.5s cubic-bezier(.45,1.5,.65,1) forwards;
 }
 
- @keyframes hexagonAppear {
-from {
-transform: scale(1.5);
-opacity: 0;
-}
-to {
-transform: scale(1);
-opacity: 1;
-}
+@keyframes hexagonAppear {
+  from {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .hexagon-container .dot {
-position: absolute;
-width: 50px;
-height: 50px;
-border-radius: 50%;
-display: flex;
-justify-content: center;
-align-items: center;
-transform: translate(-50%, -50%);
-cursor: pointer;
-transition: transform 0.5s ease;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 0.5s ease;
 }
 
 .hexagon-container .dot:hover {
-transform: translate(-50%, -50%) scale(1.1);
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
 .hexagon-container .dot::after {
-content: '';
-width: 16px;
-height: 16px;
-border-radius: 50%;
-transition: all 0.3s ease;
+  content: '';
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
 }
 
 .hexagon-container .dot:hover::after {
-width: 10px;
-height: 10px;
+  width: 10px;
+  height: 10px;
 }
 
-/* Exact colors from app.html */
 .hexagon-container .dot:nth-child(1) { top: 0; left: 50%; background-color: #ffffe6; }
 .hexagon-container .dot:nth-child(1)::after { background-color: #ebdf87; }
 
@@ -622,30 +888,38 @@ height: 10px;
 .hexagon-container .dot:nth-child(6) { top: 25%; left: 13.4%; background-color: #daedff; }
 .hexagon-container .dot:nth-child(6)::after { background-color: #0088ff; }
 
-/* iOS specific styles */
-_::-webkit-full-page-media, _:future, :root .amount-input {
-  -webkit-user-select: text;
-  -webkit-touch-callout: default;
-}
-
 </style>
 </head>
 <body>
+<!-- PWA Notification Overlay -->
+<div class="pwa-notification-overlay" id="pwaNotificationOverlay">
+  <div class="pwa-notification-container">
+    <div class="pwa-center-stage">
+      <div class="pwa-center-icon"></div>
+      <div class="pwa-center-title">こんにちは</div>
+    </div>
+    <div class="pwa-notification-card" id="pwaNotificationCard">
+      <div class="pwa-notification-content">
+        <div class="pwa-notification-icon"></div>
+        <div class="pwa-notification-text">
+          <div class="pwa-app-name">野牛先輩</div>
+          <div class="pwa-notification-title">ホーム画面に追加しよう</div>
+          <div class="pwa-notification-body" id="pwaAnimatedBody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Translation Layer -->
 <div class="translation-layer">
 <div class="mic-wrapper" id="wrapper">
-<div class="dots-container" id="dotsContainer"></div>
+<div class="dots-container" id="dotsContainer"><div class="dot" style="left: 291px; top: 141px;">🇺🇸</div><div class="dot" style="left: 262.353px; top: 229.168px;">🇯🇵</div><div class="dot" style="left: 187.353px; top: 283.658px;">🇨🇳</div><div class="dot" style="left: 94.6475px; top: 283.658px;">🇰🇷</div><div class="dot" style="left: 19.6475px; top: 229.168px;">🇪🇸</div><div class="dot" style="left: -9px; top: 141px;">🇫🇷</div><div class="dot" style="left: 19.6475px; top: 52.8322px;">🇷🇺</div><div class="dot" style="left: 94.6475px; top: -1.65848px;">🇸🇦</div><div class="dot" style="left: 187.353px; top: -1.65848px;">🇮🇳</div><div class="dot" style="left: 262.353px; top: 52.8322px;">🇧🇷</div></div>
 <div id="mic" class="mic"></div>
 <div class="selected-flag" id="selectedFlag"></div>
 </div>
 <div id="jp" class="not-blurred">
-<input id="inputText" type="text"
-placeholder="ここに入力"
-autocomplete="off"
-autocorrect="off"
-autocapitalize="off"
-spellcheck="false"
-name="no_save" />
+<input id="inputText" type="text" placeholder="ここに入力" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="no_save">
 </div>
 <div id="en" class="not-blurred"></div>
 </div>
@@ -658,39 +932,39 @@ name="no_save" />
 <div class="currency-content">
 <div class="currency-card" id="card1">
 <select class="country-select" id="fromSelect" onchange="selectCountry('from', this.value)">
-<option value="🇺🇸">United States</option>
-<option value="🇯🇵">日本</option>
-<option value="🇨🇳">中国</option>
-<option value="🇰🇷">대한민국</option>
-<option value="🇪🇸">España</option>
-<option value="🇫🇷">France</option>
-<option value="🇷🇺">Россия</option>
-<option value="🇸🇦">المملكة العربية السعودية</option>
-<option value="🇮🇳">भारत</option>
-<option value="🇧🇷">Brasil</option>
+<option value="🇺🇸"> United States</option>
+<option value="🇯🇵"> 日本</option>
+<option value="🇨🇳"> 中国</option>
+<option value="🇰🇷"> 대한민국</option>
+<option value="🇪🇸"> España</option>
+<option value="🇫🇷"> France</option>
+<option value="🇷🇺"> Россия</option>
+<option value="🇸🇦"> المملكة العربية السعودية</option>
+<option value="🇮🇳"> भारत</option>
+<option value="🇧🇷"> Brasil</option>
 </select>
 <div class="amount-container" onclick="enableEdit('from')">
 <div class="amount-display size-lg" id="fromAmountDisplay">$100</div>
-<input type="text" class="amount-input size-lg" id="fromAmountInput" value="100" oninput="validateInput(this)" onblur="disableEdit('from')" onkeydown="handleEnterKey(event, 'from')" inputmode="decimal" pattern="[0-9]*">
+<input type="text" class="amount-input size-lg" id="fromAmountInput" value="100" oninput="validateInput(this)" onblur="disableEdit('from')" onkeydown="handleEnterKey(event, 'from')" inputmode="decimal">
 </div>
 <div class="datetime" id="fromDateTime">Saturday, Sep 9 10:00</div>
 </div>
 <div class="currency-card" id="card2">
 <select class="country-select" id="toSelect" onchange="selectCountry('to', this.value)">
-<option value="🇺🇸">United States</option>
-<option value="🇯🇵" selected>日本</option>
-<option value="🇨🇳">中国</option>
-<option value="🇰🇷">대한민국</option>
-<option value="🇪🇸">España</option>
-<option value="🇫🇷">France</option>
-<option value="🇷🇺">Россия</option>
-<option value="🇸🇦">المملكة العربية السعودية</option>
-<option value="🇮🇳">भारत</option>
-<option value="🇧🇷">Brasil</option>
+<option value="🇺🇸"> United States</option>
+<option value="🇯🇵" selected=""> 日本</option>
+<option value="🇨🇳"> 中国</option>
+<option value="🇰🇷"> 대한민국</option>
+<option value="🇪🇸"> España</option>
+<option value="🇫🇷"> France</option>
+<option value="🇷🇺"> Россия</option>
+<option value="🇸🇦"> المملكة العربية السعودية</option>
+<option value="🇮🇳"> भारत</option>
+<option value="🇧🇷"> Brasil</option>
 </select>
 <div class="amount-container" onclick="enableEdit('to')">
 <div class="amount-display size-lg" id="toAmountDisplay">¥15,000</div>
-<input type="text" class="amount-input size-lg" id="toAmountInput" value="15000" oninput="validateInput(this)" onblur="disableEdit('to')" onkeydown="handleEnterKey(event, 'to')" inputmode="decimal" pattern="[0-9]*">
+<input type="text" class="amount-input size-lg" id="toAmountInput" value="15000" oninput="validateInput(this)" onblur="disableEdit('to')" onkeydown="handleEnterKey(event, 'to')" inputmode="decimal">
 </div>
 <div class="datetime" id="toDateTime">9月9日 土曜日 2:00</div>
 </div>
@@ -699,45 +973,31 @@ name="no_save" />
 
 <!-- Hexagon UI -->
 <div class="hexagon-layer" id="hexagonLayer">
-<div class="hexagon-container">
-<div class="dot"></div>
-<div class="dot"></div>
-<div class="dot"></div>
-<div class="dot"></div>
-<div class="dot"></div>
-<div class="dot"></div>
+    <div class="hexagon-container">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
 </div>
+
+<!-- Instruction Overlay -->
+<div class="instruction-overlay">
+Press → or Cmd+T for currency converter
 </div>
 
-
-
-<script>
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => console.log('Service Worker: Registered'))
-      .catch(err => console.log(`Service Worker: Error: ${'err'}`));
-  });
-}
-
-// iOS Haptic Support
-try {
-  if (window.haptic) {} // Already loaded
-} catch (e) {
-  (async () => {
-    try {
-      const { haptic } = await import("https://esm.sh/ios-haptics");
-      window.haptic = haptic;
-    } catch (e) {
-      window.haptic = {
+<script type="module">
+  try {
+    const { haptic } = await import("https://esm.sh/ios-haptics");
+    window.haptic = haptic;
+  } catch (e) {
+    window.haptic = {
         confirm: () => {},
         error: () => {},
-      };
-    }
-  })();
-}
-</script>
+    };
+  }
 </script>
 
 <script>
@@ -753,6 +1013,11 @@ const inputEl = document.getElementById("inputText");
 const currencyLayer = document.getElementById("currencyLayer");
 const hexagonLayer = document.getElementById("hexagonLayer");
 
+// PWA Notification Elements
+const pwaNotificationOverlay = document.getElementById("pwaNotificationOverlay");
+const pwaNotificationCard = document.getElementById("pwaNotificationCard");
+const pwaAnimatedBody = document.getElementById("pwaAnimatedBody");
+
 // State Variables
 let isJpToEn = true;
 let enterCount = 0;
@@ -761,36 +1026,146 @@ let isMovedUp = false;
 let selectedLanguage = null;
 let isCurrencyActive = false;
 let isHexagonActive = false;
+let isPwaNotificationShown = false;
 
-// iOS Detection
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+// PWA Detection Functions
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
+
+function isPadOS() {
+    return navigator.userAgent.includes('Mac') && 'ontouchend' in document;
+}
+
+function isMacOS() {
+    return navigator.userAgent.includes('Mac') && !('ontouchend' in document);
+}
+
+function getOSVersion() {
+    const userAgent = navigator.userAgent;
+    if (isIOS()) {
+        const match = userAgent.match(/OS (\d+)_(\d+)/);
+        return match ? parseInt(match[1]) : 0;
+    } else if (isPadOS() || isMacOS()) {
+        const match = userAgent.match(/Mac OS X (\d+)_(\d+)/);
+        return match ? parseInt(match[1]) : 0;
+    }
+    return 0;
+}
+
+function isStandalone() {
+    return window.navigator.standalone === true || 
+           window.matchMedia('(display-mode: standalone)').matches ||
+           window.matchMedia('(display-mode: fullscreen)').matches;
+}
+
+function shouldShowPWANotification() {
+    try {
+        const osVersion = getOSVersion();
+        const isValidOS = (isIOS() && osVersion >= 18) || 
+                          (isPadOS() && osVersion >= 18) || 
+                          (isMacOS() && osVersion >= 15);
+        
+        const dismissed = localStorage.getItem('pwa-notification-dismissed');
+        return isValidOS && !isStandalone() && !dismissed;
+    } catch (e) {
+        return false;
+    }
+}
+
+// PWA Notification Functions
+function showPWANotification() {
+    if (isPwaNotificationShown || !shouldShowPWANotification()) return;
+    
+    isPwaNotificationShown = true;
+    pwaNotificationOverlay.classList.add('show');
+    
+    setTimeout(() => {
+        document.body.classList.add('notification-shown');
+    }, 3000);
+    
+    const bodyText = 'ホームに追加してアプリに。';
+    const lines = bodyText.match(/.{1,20}/g) || [bodyText];
+    pwaAnimatedBody.innerHTML = '';
+    
+    lines.forEach((line, index) => {
+        const div = document.createElement('div');
+        div.className = 'line';
+        div.textContent = line;
+        div.style.animationDelay = (1 + index * 0.35) + 's';
+        pwaAnimatedBody.appendChild(div);
+    });
+    
+    setTimeout(() => {
+        movePWANotificationUp();
+    }, 4500);
+}
+
+function movePWANotificationUp() {
+    pwaNotificationCard.classList.add('move-up');
+}
+
+function dismissPWANotification() {
+    pwaNotificationCard.classList.add('fade-out');
+    setTimeout(() => {
+        pwaNotificationOverlay.classList.remove('show');
+        document.body.classList.remove('notification-shown');
+        try {
+            localStorage.setItem('pwa-notification-dismissed', 'true');
+        } catch (e) {}
+    }, 500);
+}
+
+// Touch handling for swipe up gesture
+let touchStartY = 0;
+
+pwaNotificationCard.addEventListener('touchstart', (e) => {
+    touchStartY = e.changedTouches[0].screenY;
+});
+
+pwaNotificationCard.addEventListener('touchend', (e) => {
+    const touchEndY = e.changedTouches[0].screenY;
+    const swipeDistance = touchStartY - touchEndY;
+    
+    if (swipeDistance > 50) {
+        dismissPWANotification();
+    }
+});
+
+pwaNotificationCard.addEventListener('click', dismissPWANotification);
 
 // Haptic Functions
-const playHapticConfirm = () => window.haptic?.confirm();
-const playHapticBurst = () => {
-if (!window.haptic) return;
-const delay = 40;
-for (let i = 0; i < 5; i++) {
-setTimeout(() => window.haptic.error(), i * delay);
-}
+const playHapticConfirm = () => {
+    if (window.haptic && window.haptic.confirm) window.haptic.confirm();
 };
+
+const playHapticBurst = () => {
+    if (!window.haptic || !window.haptic.error) return;
+    const delay = 40;
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => window.haptic.error(), i * delay);
+    }
+};
+
 const playHapticUltraBurst = () => {
-if (!window.haptic) return;
-const delay = 30;
-for (let i = 0; i < 5; i++) {
-setTimeout(() => window.haptic.error(), i * delay);
-}
+    if (!window.haptic || !window.haptic.error) return;
+    const delay = 30;
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => window.haptic.error(), i * delay);
+    }
 };
 
 // Data
 const languageMap = {
-    '🇺🇸': 'en-US', '🇯🇵': 'ja-JP', '🇨🇳': 'zh-CN', '🇰🇷': 'ko-KR', '🇪🇸': 'es-ES',
+    '🇯🇵': 'ja-JP', '🇨🇳': 'zh-CN', '🇰🇷': 'ko-KR', '🇺🇸': 'en-US', '🇪🇸': 'es-ES',
     '🇫🇷': 'fr-FR', '🇷🇺': 'ru-RU', '🇸🇦': 'ar-SA', '🇮🇳': 'hi-IN', '🇧🇷': 'pt-BR'
 };
+
 const translationMap = {
-    '🇺🇸': 'en', '🇯🇵': 'ja', '🇨🇳': 'zh', '🇰🇷': 'ko', '🇪🇸': 'es',
+    '🇯🇵': 'ja', '🇨🇳': 'zh', '🇰🇷': 'ko', '🇺🇸': 'en', '🇪🇸': 'es',
     '🇫🇷': 'fr', '🇷🇺': 'ru', '🇸🇦': 'ar', '🇮🇳': 'hi', '🇧🇷': 'pt'
 };
+
 const countries = {
     '🇺🇸': { code: 'USD', symbol: '$', timezone: 'America/New_York', names: { ja: 'アメリカ', en: 'United States' }},
     '🇯🇵': { code: 'JPY', symbol: '¥', timezone: 'Asia/Tokyo', names: { ja: '日本', en: 'Japan' }},
@@ -807,495 +1182,435 @@ let fromCountry = '🇺🇸';
 let toCountry = '🇯🇵';
 let exchangeRates = {};
 
-// Layer Management Functions
+// UI Layer Management
 function showCurrencyLayer() {
-if (isCurrencyActive) return;
-currencyLayer.classList.add('active');
-isCurrencyActive = true;
-blurTranslationText();
-fetchExchangeRates();
-updateDateTime();
+    if (isCurrencyActive) return;
+    currencyLayer.classList.add('active');
+    isCurrencyActive = true;
+    blurTranslationText();
+    fetchExchangeRates();
+    updateDateTime();
 }
 
 function hideCurrencyLayer() {
-if (!isCurrencyActive) return;
-currencyLayer.classList.remove('active');
-isCurrencyActive = false;
-unblurTranslationText();
+    if (!isCurrencyActive) return;
+    currencyLayer.classList.remove('active');
+    isCurrencyActive = false;
+    unblurTranslationText();
 }
 
 function showHexagonLayer() {
-if(isHexagonActive) return;
-hexagonLayer.classList.add('show');
-isHexagonActive = true;
+    if(isHexagonActive) return;
+    hexagonLayer.classList.add('show');
+    isHexagonActive = true;
 }
 
 function hideHexagonLayer() {
-if(!isHexagonActive) return;
-hexagonLayer.classList.remove('show');
-isHexagonActive = false;
+    if(!isHexagonActive) return;
+    hexagonLayer.classList.remove('show');
+    isHexagonActive = false;
 }
 
 function blurTranslationText() {
-jpEl.classList.remove('not-blurred');
-jpEl.classList.add('blurred');
-enEl.classList.remove('not-blurred');
-enEl.classList.add('blurred');
+    jpEl.classList.add('blurred');
+    enEl.classList.add('blurred');
 }
 
 function unblurTranslationText() {
-jpEl.classList.remove('blurred');
-jpEl.classList.add('not-blurred');
-enEl.classList.remove('blurred');
-enEl.classList.add('not-blurred');
+    jpEl.classList.remove('blurred');
+    enEl.classList.remove('blurred');
 }
 
-// Mic and Layout Management
 function moveMicUpAndShowCurrency() {
-if (isMovedUp) return;
-micEl.classList.remove("shrunk");
-micEl.classList.add("mini");
-setTimeout(() => {
-wrapperEl.classList.add("moved-up");
-micEl.classList.add("moved-up");
-isMovedUp = true;
-dotsContainer.classList.remove("show");
-setTimeout(() => backButton.classList.add("show"), 250);
-setTimeout(showCurrencyLayer, 300);
-}, 500);
+    if (isMovedUp) return;
+    micEl.classList.remove("shrunk");
+    micEl.classList.add("mini");
+    setTimeout(() => {
+        wrapperEl.classList.add("moved-up");
+        micEl.classList.add("moved-up");
+        isMovedUp = true;
+        dotsContainer.classList.remove("show");
+        setTimeout(() => backButton.classList.add("show"), 250);
+        setTimeout(showCurrencyLayer, 300);
+    }, 500);
 }
 
 function closeAllAndReset() {
-hideCurrencyLayer();
-hideHexagonLayer();
-backButton.classList.remove("show");
-setTimeout(() => {
-wrapperEl.classList.remove("moved-up");
-micEl.classList.remove("moved-up", "mini");
-isMovedUp = false;
-micPressed = false;
-if (selectedLanguage) {
-const flagKey = Object.keys(translationMap).find(key => translationMap[key] === selectedLanguage);
-if (flagKey) {
-selectedFlag.textContent = flagKey;
-selectedFlag.style.fontSize = "24px";
-selectedFlag.style.opacity = "0.7";
-selectedFlag.classList.remove("hide");
-}
-}
-}, 250);
+    hideCurrencyLayer();
+    hideHexagonLayer();
+    backButton.classList.remove("show");
+    setTimeout(() => {
+        wrapperEl.classList.remove("moved-up");
+        micEl.classList.remove("moved-up", "mini");
+        isMovedUp = false;
+        micPressed = false;
+        if (selectedLanguage) {
+            const flagKey = Object.keys(translationMap).find(key => translationMap[key] === selectedLanguage);
+            if (flagKey) {
+                selectedFlag.textContent = flagKey;
+                selectedFlag.style.fontSize = "24px";
+                selectedFlag.style.opacity = "0.7";
+                selectedFlag.classList.remove("hide");
+            }
+        }
+    }, 250);
 }
 
 // Event Listeners
 document.addEventListener('keydown', function(e) {
-if (e.key === 'ArrowUp' || (e.metaKey && e.key === 't')) {
-e.preventDefault();
-if (isCurrencyActive) {
-showHexagonLayer();
-} else {
-moveMicUpAndShowCurrency();
-}
-} else if (e.key === 'ArrowDown' || e.key === 'Escape') {
-e.preventDefault();
-if (isHexagonActive) {
-hideHexagonLayer();
-} else {
-closeAllAndReset();
-}
-}
+    if (e.key === 'ArrowUp' || (e.metaKey && e.key === 't')) {
+        e.preventDefault();
+        if (isCurrencyActive) {
+            showHexagonLayer();
+        } else {
+            moveMicUpAndShowCurrency();
+        }
+    } else if (e.key === 'ArrowDown' || e.key === 'Escape') {
+        e.preventDefault();
+        if (isHexagonActive) {
+            hideHexagonLayer();
+        } else {
+            closeAllAndReset();
+        }
+    }
 });
 
 wrapperEl.addEventListener("click", (e) => {
-playHapticBurst();
-if (isMovedUp) {
-return;
-}
-if (!micPressed) {
-micEl.classList.add("shrunk");
-dotsContainer.classList.add("show");
-micPressed = true;
-} else {
-moveMicUpAndShowCurrency();
-}
+    playHapticBurst();
+    if (isMovedUp) {
+        return;
+    }
+    if (!micPressed) {
+        micEl.classList.add("shrunk");
+        dotsContainer.classList.add("show");
+        micPressed = true;
+    } else {
+        moveMicUpAndShowCurrency();
+    }
 });
 
 backButton.addEventListener("click", (e) => {
-playHapticConfirm();
-e.preventDefault();
-e.stopPropagation();
-closeAllAndReset();
+    playHapticConfirm();
+    e.preventDefault();
+    e.stopPropagation();
+    closeAllAndReset();
 });
 
 hexagonLayer.addEventListener('click', (e) => {
-if (e.target === hexagonLayer) {
-hideHexagonLayer();
-}
+    if (e.target === hexagonLayer) {
+        hideHexagonLayer();
+    }
 });
 
 document.querySelectorAll('.hexagon-container .dot').forEach(dot => {
-dot.addEventListener('click', playHapticConfirm);
+    dot.addEventListener('click', playHapticConfirm);
 });
 
 enEl.addEventListener("click", () => {
-playHapticUltraBurst();
-const text = enEl.textContent;
-if (!text) return;
-const langToSpeak = selectedLanguage ? languageMap[Object.keys(translationMap).find(key => translationMap[key] === selectedLanguage)] : (isJpToEn ? 'en-US' : 'ja-JP');
-speakText(text, langToSpeak);
+    playHapticUltraBurst();
+    const text = enEl.textContent;
+    if (!text) return;
+    const langToSpeak = selectedLanguage ? languageMap[Object.keys(translationMap).find(key => translationMap[key] === selectedLanguage)] : (isJpToEn ? 'en-US' : 'ja-JP');
+    speakText(text, langToSpeak);
 });
 
 inputEl.addEventListener('focus', playHapticUltraBurst);
 
 inputEl.addEventListener("keydown", (e) => {
-if (e.key === "Enter") {
-enterCount++;
-const input = inputEl.value.trim().toLowerCase();
-if (isJpToEn && (input === "english" || input === "en")) swapDirection();
-else if (!isJpToEn && (input.includes("日本語") || input.includes("にほんご"))) swapDirection();
-if (enterCount >= 3) resetAll();
-}
+    if (e.key === "Enter") {
+        enterCount++;
+        const input = inputEl.value.trim().toLowerCase();
+        if (isJpToEn && (input === "english" || input === "en")) swapDirection();
+        else if (!isJpToEn && (input.includes("日本語") || input.includes("にほんご"))) swapDirection();
+        if (enterCount >= 3) resetAll();
+    }
 });
 
 inputEl.addEventListener("input", async () => {
-enterCount = 0;
-const text = inputEl.value;
-const translated = await translate(text);
-enEl.textContent = translated;
-enEl.classList.remove("show");
-void enEl.offsetWidth;
-enEl.classList.add("show");
-micEl.classList.remove("pulse");
-void micEl.offsetWidth;
-micEl.classList.add("pulse");
+    enterCount = 0;
+    const text = inputEl.value;
+    const translated = await translate(text);
+    enEl.textContent = translated;
+    enEl.classList.remove("show");
+    void enEl.offsetWidth;
+    enEl.classList.add("show");
+    micEl.classList.remove("pulse");
+    void micEl.offsetWidth;
+    micEl.classList.add("pulse");
 });
 
-// Translation Functions
+// Translation Logic
 async function translate(text) {
-if (!text) return "";
-try {
-let from = isJpToEn ? "ja" : "en";
-let to = selectedLanguage || (isJpToEn ? "en" : "ja");
-const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`);
-if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-const data = await res.json();
-return data.responseData?.translatedText || "";
-} catch (error) {
-console.error('Translation error:', error);
-return "Translation error";
-}
+    if (!text) return "";
+    try {
+        let from = isJpToEn ? "ja" : "en";
+        let to = selectedLanguage || (isJpToEn ? "en" : "ja");
+        const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        return data.responseData?.translatedText || "";
+    } catch (error) {
+        console.error('Translation error:', error);
+        return "Translation error";
+    }
 }
 
 function speakText(text, languageCode) {
-if ('speechSynthesis' in window) {
-try {
-speechSynthesis.cancel();
-const utterance = new SpeechSynthesisUtterance(text);
-utterance.lang = languageCode;
-speechSynthesis.speak(utterance);
-} catch (error) {
-console.error('Speech synthesis error:', error);
-}
-}
-}
-
-function translateCurrentInput() {
-if (inputEl.value.trim()) {
-inputEl.dispatchEvent(new Event('input'));
-}
+    if ('speechSynthesis' in window) {
+        try {
+            speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = languageCode;
+            speechSynthesis.speak(utterance);
+        } catch (error) {
+            console.error('Speech synthesis error:', error);
+        }
+    }
 }
 
-// Dots and Flag Selection
+// UI Creation and Updates
 function createDots() {
-const flags = Object.keys(countries);
-dotsContainer.innerHTML = '';
-for (let i = 0; i < flags.length; i++) {
-const dot = document.createElement('div');
-dot.className = 'dot';
-dot.textContent = flags[i];
-const angle = (i * 360) / flags.length;
-const radian = (angle * Math.PI) / 180;
-const radius = 150;
-dot.style.left = `${Math.cos(radian) * radius + 150 - 9}px`;
-dot.style.top = `${Math.sin(radian) * radius + 150 - 9}px`;
-dot.addEventListener('click', (e) => {
-playHapticConfirm();
-e.stopPropagation();
-selectFlag(flags[i]);
-});
-dotsContainer.appendChild(dot);
-}
+    const flags = Object.keys(countries);
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < 10; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.textContent = flags[i];
+        const angle = (i * 360) / 10;
+        const radian = (angle * Math.PI) / 180;
+        const radius = 150;
+        dot.style.left = `${Math.cos(radian) * radius + 150 - 9}px`;
+        dot.style.top = `${Math.sin(radian) * radius + 150 - 9}px`;
+        dot.addEventListener('click', (e) => {
+            playHapticConfirm();
+            e.stopPropagation();
+            selectFlag(flags[i]);
+        });
+        dotsContainer.appendChild(dot);
+    }
 }
 
 function selectFlag(flag) {
-selectedLanguage = translationMap[flag];
-dotsContainer.classList.remove("show");
-selectedFlag.textContent = flag;
-selectedFlag.classList.add("show");
-fromCountry = flag;
-document.getElementById('fromSelect').value = flag;
-updateDateTime();
-convertCurrency('from', true);
-setTimeout(() => {
-selectedFlag.classList.add("hide");
-setTimeout(() => {
-selectedFlag.style.fontSize = "24px";
-selectedFlag.style.opacity = "0.7";
-selectedFlag.classList.remove("hide");
-}, 500);
-}, 500);
-micPressed = false;
-translateCurrentInput();
+    selectedLanguage = translationMap[flag];
+    dotsContainer.classList.remove("show");
+    selectedFlag.textContent = flag;
+    selectedFlag.classList.add("show");
+    fromCountry = flag;
+    document.getElementById('fromSelect').value = flag;
+    updateDateTime();
+    convertCurrency('from', true);
+    setTimeout(() => {
+        selectedFlag.classList.add("hide");
+        setTimeout(() => {
+            selectedFlag.style.fontSize = "24px";
+            selectedFlag.style.opacity = "0.7";
+            selectedFlag.classList.remove("hide");
+        }, 500);
+    }, 500);
+    micPressed = false;
+    if (inputEl.value.trim()) {
+        inputEl.dispatchEvent(new Event('input'));
+    }
 }
 
-// UI Control Functions
 function swapDirection() {
-isJpToEn = !isJpToEn;
-jpEl.style.top = isJpToEn ? "" : "30px";
-jpEl.style.bottom = isJpToEn ? "30px" : "";
-enEl.style.top = isJpToEn ? "30px" : "";
-enEl.style.bottom = isJpToEn ? "" : "30px";
-enEl.style.transform = isJpToEn ? "rotate(180deg)" : "rotate(0deg)";
-inputEl.placeholder = isJpToEn ? "ここに入力" : "Type here...";
-resetAll();
+    isJpToEn = !isJpToEn;
+    jpEl.style.top = isJpToEn ? "" : "30px";
+    jpEl.style.bottom = isJpToEn ? "30px" : "";
+    enEl.style.top = isJpToEn ? "30px" : "";
+    enEl.style.bottom = isJpToEn ? "" : "30px";
+    enEl.style.transform = isJpToEn ? "rotate(180deg)" : "rotate(0deg)";
+    inputEl.placeholder = isJpToEn ? "ここに入力" : "Type here...";
+    resetAll();
 }
 
 function resetAll() {
-inputEl.value = "";
-enEl.textContent = "";
-enEl.classList.remove("show");
-enterCount = 0;
-inputEl.focus();
+    inputEl.value = "";
+    enEl.textContent = "";
+    enEl.classList.remove("show");
+    enterCount = 0;
+    inputEl.focus();
 }
 
-// Currency Functions
+// Currency Conversion Logic
 function formatAmount(amount) {
-if (amount >= 1000) return Math.round(amount).toLocaleString();
-return parseFloat(amount.toFixed(2)).toString();
+    if (amount >= 1000) return Math.round(amount).toLocaleString();
+    return parseFloat(amount.toFixed(2)).toString();
 }
 
 function updateDisplay(type, amount, animate = false) {
-const targetCountry = type === 'from' ? fromCountry : toCountry;
-const symbol = countries[targetCountry].symbol;
-const displayText = `${symbol}${formatAmount(amount)}`;
-const displayElement = document.getElementById(`${type}AmountDisplay`);
-const inputElement = document.getElementById(`${type}AmountInput`);
-if (!displayElement.parentElement.classList.contains('editing-mode')) {
-applySizeClass(displayElement, displayText);
-applySizeClass(inputElement, displayText);
-displayElement.textContent = displayText;
-inputElement.value = amount;
-if (animate) addSlideUpAnimation(displayElement);
-}
+    const targetCountry = type === 'from' ? fromCountry : toCountry;
+    const symbol = countries[targetCountry].symbol;
+    const displayText = `${symbol}${formatAmount(amount)}`;
+    const displayElement = document.getElementById(`${type}AmountDisplay`);
+    const inputElement = document.getElementById(`${type}AmountInput`);
+    if (!displayElement.parentElement.classList.contains('editing-mode')) {
+        applySizeClass(displayElement, displayText);
+        applySizeClass(inputElement, displayText);
+        displayElement.textContent = displayText;
+        inputElement.value = amount;
+        if (animate) addSlideUpAnimation(displayElement);
+    }
 }
 
 function updateDisplayForced(type, amount, animate = false) {
-const targetCountry = type === 'from' ? fromCountry : toCountry;
-const symbol = countries[targetCountry].symbol;
-const displayText = `${symbol}${formatAmount(amount)}`;
-const displayElement = document.getElementById(`${type}AmountDisplay`);
-const inputElement = document.getElementById(`${type}AmountInput`);
-applySizeClass(displayElement, displayText);
-applySizeClass(inputElement, displayText);
-displayElement.textContent = displayText;
-inputElement.value = amount;
-if (animate) addSlideUpAnimation(displayElement);
+    const targetCountry = type === 'from' ? fromCountry : toCountry;
+    const symbol = countries[targetCountry].symbol;
+    const displayText = `${symbol}${formatAmount(amount)}`;
+    const displayElement = document.getElementById(`${type}AmountDisplay`);
+    const inputElement = document.getElementById(`${type}AmountInput`);
+    applySizeClass(displayElement, displayText);
+    applySizeClass(inputElement, displayText);
+    displayElement.textContent = displayText;
+    inputElement.value = amount;
+    if (animate) addSlideUpAnimation(displayElement);
 }
 
 function convertCurrency(source, animate = false) {
-const fromInput = document.getElementById('fromAmountInput');
-const toInput = document.getElementById('toAmountInput');
-const fromAmount = parseFloat(fromInput.value.replace(/,/g, '')) || 0;
-const toAmount = parseFloat(toInput.value.replace(/,/g, '')) || 0;
-const fromCode = countries[fromCountry].code;
-const toCode = countries[toCountry].code;
-if (!exchangeRates[fromCode] || !exchangeRates[toCode]) return;
-try {
-if (source === 'from') {
-const convertedAmount = (fromAmount / exchangeRates[fromCode]) * exchangeRates[toCode];
-updateDisplay('to', convertedAmount, animate);
-} else {
-const convertedAmount = (toAmount / exchangeRates[toCode]) * exchangeRates[fromCode];
-updateDisplay('from', convertedAmount, animate);
-}
-} catch (e) { 
-console.error('Conversion error:', e); 
-}
+    const fromInput = document.getElementById('fromAmountInput');
+    const toInput = document.getElementById('toAmountInput');
+    const fromAmount = parseFloat(fromInput.value.replace(/,/g, '')) || 0;
+    const toAmount = parseFloat(toInput.value.replace(/,/g, '')) || 0;
+    const fromCode = countries[fromCountry].code;
+    const toCode = countries[toCountry].code;
+    if (!exchangeRates[fromCode] || !exchangeRates[toCode]) return;
+    try {
+        if (source === 'from') {
+            const convertedAmount = (fromAmount / exchangeRates[fromCode]) * exchangeRates[toCode];
+            updateDisplay('to', convertedAmount, animate);
+        } else {
+            const convertedAmount = (toAmount / exchangeRates[toCode]) * exchangeRates[fromCode];
+            updateDisplay('from', convertedAmount, animate);
+        }
+    } catch (e) { console.error('Conversion error:', e); }
 }
 
 async function fetchExchangeRates() {
-try {
-const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-if (!response.ok) throw new Error('Primary API failed');
-const data = await response.json();
-exchangeRates = data.rates;
-} catch (error) {
-try {
-const response = await fetch('https://open.er-api.com/v6/latest/USD');
-if (!response.ok) throw new Error('Backup API failed');
-const data = await response.json();
-exchangeRates = data.rates;
-} catch (e) {
-console.error('All currency APIs failed:', e);
-exchangeRates = { USD: 1, JPY: 150, EUR: 0.9, CNY: 7.2, KRW: 1350, INR: 83, BRL: 5.1, RUB: 90, SAR: 3.75 };
-}
-}
-exchangeRates.USD = 1;
-convertCurrency('from');
+    try {
+        const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+        if (!response.ok) throw new Error('Primary API failed');
+        const data = await response.json();
+        exchangeRates = data.rates;
+    } catch (error) {
+        try {
+            const response = await fetch('https://open.er-api.com/v6/latest/USD');
+            if (!response.ok) throw new Error('Backup API failed');
+            const data = await response.json();
+            exchangeRates = data.rates;
+        } catch (e) {
+            console.error('All currency APIs failed:', e);
+            exchangeRates = { USD: 1, JPY: 150, EUR: 0.9, CNY: 7.2, KRW: 1350, INR: 83, BRL: 5.1, RUB: 90 };
+        }
+    }
+    exchangeRates.USD = 1;
+    convertCurrency('from');
 }
 
-// iOS Optimized Currency Input Functions
 function enableEdit(type) {
-playHapticBurst();
-const container = document.getElementById(`${type}AmountDisplay`).parentElement;
-const input = document.getElementById(`${type}AmountInput`);
-const display = document.getElementById(`${type}AmountDisplay`);
-const symbol = countries[type === 'from' ? fromCountry : toCountry].symbol;
-input.value = display.textContent.replace(symbol, '').replace(/,/g, '');
-applySizeClass(input, input.value);
-container.classList.add('editing-mode');
-
-// iOS specific optimizations
-if (isIOS) {
-input.setAttribute('type', 'number');
-}
-
-setTimeout(() => { 
-input.focus(); 
-input.select(); 
-if (isIOS) {
-input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-}, 50);
+    playHapticBurst();
+    const container = document.getElementById(`${type}AmountDisplay`).parentElement;
+    const input = document.getElementById(`${type}AmountInput`);
+    const display = document.getElementById(`${type}AmountDisplay`);
+    const symbol = countries[type === 'from' ? fromCountry : toCountry].symbol;
+    input.value = display.textContent.replace(symbol, '').replace(/,/g, '');
+    applySizeClass(input, input.value);
+    container.classList.add('editing-mode');
+    setTimeout(() => { input.focus(); input.select(); }, 50);
 }
 
 function disableEdit(type) {
-setTimeout(() => {
-const container = document.getElementById(`${type}AmountDisplay`).parentElement;
-if (!container.classList.contains('editing-mode')) return;
-const input = document.getElementById(`${type}AmountInput`);
-input.value = convertFullWidthToHalf(input.value);
-const amount = parseFloat(input.value.replace(/,/g, '')) || 0;
-updateDisplayForced(type, amount, true);
-container.classList.remove('editing-mode');
-convertCurrency(type, true);
-}, 150);
+    setTimeout(() => {
+        const container = document.getElementById(`${type}AmountDisplay`).parentElement;
+        if (!container.classList.contains('editing-mode')) return;
+        const input = document.getElementById(`${type}AmountInput`);
+        input.value = convertFullWidthToHalf(input.value);
+        const amount = parseFloat(input.value.replace(/,/g, '')) || 0;
+        updateDisplayForced(type, amount, true);
+        container.classList.remove('editing-mode');
+        convertCurrency(type, true);
+    }, 150);
 }
 
 function handleEnterKey(event, type) {
-if (event.key === 'Enter' || event.key === 'Return') {
-event.preventDefault();
-document.getElementById(`${type}AmountInput`).blur();
-}
+    if (event.key === 'Enter' || event.key === 'Return') {
+        event.preventDefault();
+        document.getElementById(`${type}AmountInput`).blur();
+    }
 }
 
 function selectCountry(type, flag) {
-playHapticConfirm();
-if (type === 'from') {
-fromCountry = flag;
-} else {
-toCountry = flag;
-}
-updateDateTime();
-convertCurrency('from', true);
+    playHapticConfirm();
+    if (type === 'from') fromCountry = flag;
+    else toCountry = flag;
+    updateDateTime();
+    convertCurrency('from', true);
 }
 
 function updateDateTime() {
-try {
-const fromTz = countries[fromCountry].timezone;
-const toTz = countries[toCountry].timezone;
-const fromTime = new Date().toLocaleString('en-US', { 
-timeZone: fromTz, 
-weekday: 'short', 
-month: 'short', 
-day: 'numeric', 
-hour: 'numeric', 
-minute: '2-digit' 
-});
-const currentLangForDate = countries[toCountry].names.ja ? 'ja-JP' : 'en-US';
-const toTime = new Date().toLocaleString(currentLangForDate, { 
-timeZone: toTz, 
-month: 'numeric', 
-day: 'numeric', 
-weekday: 'short', 
-hour: 'numeric', 
-minute: '2-digit' 
-});
-document.getElementById('fromDateTime').textContent = fromTime;
-document.getElementById('toDateTime').textContent = toTime;
-} catch(e) { 
-console.error("Date update failed", e); 
-}
+    try {
+        const fromTz = countries[fromCountry].timezone;
+        const toTz = countries[toCountry].timezone;
+        const fromTime = new Date().toLocaleString('en-US', { timeZone: fromTz, weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+        const currentLangForDate = countries[toCountry].names.ja ? 'ja-JP' : 'en-US';
+        const toTime = new Date().toLocaleString(currentLangForDate, { timeZone: toTz, month: 'numeric', day: 'numeric', weekday: 'short', hour: 'numeric', minute: '2-digit' });
+        document.getElementById('fromDateTime').textContent = fromTime;
+        document.getElementById('toDateTime').textContent = toTime;
+    } catch(e) { console.error("Date update failed", e); }
 }
 
-// Utility Functions
 function getFontSizeClass(text) {
-const len = text.length;
-if (len > 15) return 'size-xs'; 
-if (len > 10) return 'size-sm';
-if (len > 7) return 'size-md'; 
-return 'size-lg';
+    const len = text.length;
+    if (len > 15) return 'size-xs'; 
+    if (len > 10) return 'size-sm';
+    if (len > 7) return 'size-md'; 
+    return 'size-lg';
 }
 
 function applySizeClass(element, text) {
-const newSizeClass = getFontSizeClass(text);
-element.classList.remove('size-xs', 'size-sm', 'size-md', 'size-lg');
-element.classList.add(newSizeClass);
+    const newSizeClass = getFontSizeClass(text);
+    element.classList.remove('size-xs', 'size-sm', 'size-md', 'size-lg');
+    element.classList.add(newSizeClass);
 }
 
 function addSlideUpAnimation(element) {
-element.classList.add('amount-update');
-setTimeout(() => element.classList.remove('amount-update'), 600);
+    element.classList.add('amount-update');
+    setTimeout(() => element.classList.remove('amount-update'), 600);
 }
 
 function convertFullWidthToHalf(str) {
-return str.replace(/[０-９．]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)).replace(/，/g, ',');
+    return str.replace(/[０-９．]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)).replace(/，/g, ',');
 }
 
 function validateInput(input) {
-input.value = input.value.replace(/[^0-9.,０-９．，]/g, '');
+    input.value = input.value.replace(/[^0-9.,０-９．，]/g, '');
 }
 
 // App Initialization
-function initApp() {
-createDots();
-resetAll();
-document.getElementById('fromSelect').value = fromCountry;
-document.getElementById('toSelect').value = toCountry;
-if ('speechSynthesis' in window) {
-speechSynthesis.getVoices();
-}
-fetchExchangeRates();
-updateDateTime();
-
-// iOS PWA specific initialization
-if (isIOS && window.navigator.standalone) {
-document.body.style.paddingTop = '20px'; // Status bar compensation
-}
-}
-
-// PWA Install Prompt (iOS Safari)
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-e.preventDefault();
-deferredPrompt = e;
+window.addEventListener("load", () => {
+    createDots();
+    resetAll();
+    document.getElementById('fromSelect').value = fromCountry;
+    document.getElementById('toSelect').value = toCountry;
+    if ('speechSynthesis' in window) {
+        speechSynthesis.getVoices();
+    }
+    
+    setTimeout(() => {
+        showPWANotification();
+    }, 700);
 });
-
-// iOS Viewport Height Fix
-function setVH() {
-let vh = window.innerHeight * 0.01;
-document.documentElement.style.setProperty('--vh', `${vh}px`);
-}
-
-window.addEventListener('load', () => {
-  setVH();
-  initApp();
-});
-window.addEventListener('resize', setVH);
-window.addEventListener('orientationchange', setVH);
-
-  document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-  });
 </script>
-</body>
-</html>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').then(registration => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }).catch(err => {
+        console.log('ServiceWorker registration failed: ', err);
+      });
+    });
+  }
+</script>
+
+</body></html>
